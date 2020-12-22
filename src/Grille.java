@@ -1,4 +1,5 @@
 public class Grille {
+//Ce code gère la grille du jeu.
 
 	public Case[][]plateau;
 	public int[][]adja;
@@ -13,11 +14,13 @@ public class Grille {
 	}
 	
 	public boolean horsLimite(int x, int y) {
+	//On vérifie que les coordonnées entrées respectent les dimensions du plateau. 
 		if(x>=0 && x < this.hauteur && y >= 0 && y < this.largeur) return false;
 		return true;
 	}
 	
 	public void AnimalAuSol() {
+	//Lorsqu'un animal est au niveau le plus bas du plateau, on le supprime.
 		int i=plateau.length;
 		for(int j=0;j<plateau[i].length;j++) {
 			if(plateau[i][j].piece instanceof Animal) {
@@ -29,6 +32,7 @@ public class Grille {
 	}
 	
 	public int adjacences(int x,int y) {
+	//On regarde si un cube se trouvant dans l'une des cases du tableau possède d'autres cubes de la même couleur dans les cases adjacentes. Si tel est le cas, il faut alors aussi vérifier les cases adjacentes de ces cubes. On ne prend pas en compte les diagonales.
 		int val=plateau[x][y].getValeur();
 		int adj=0;
 		if(!horsLimite(x,y) && plateau[x][y].piece instanceof Cube) {
@@ -98,6 +102,7 @@ public class Grille {
 				}
 			}
 		}
+		//Si l'entier retourné est supérieur à 3, il est possible de supprimer les cubes adjacents.
 		return adj;
 	}
 }
