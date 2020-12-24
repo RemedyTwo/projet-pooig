@@ -4,14 +4,14 @@ public class Grille {
 
 	public Case[][]plateau;
 	public int[][]adja;
-	public int hauteur, largeur, nbAnimeaux;
+	public int hauteur, largeur, nbAnimaux;
 	
-	public Grille(int h,int l, int nbAnimeaux) {
+	public Grille(int h,int l, int nbAnimaux) {
 		this.hauteur = h;
 		this.largeur = l;
 		this.plateau = new Case[h][l];
 		this.adja = new int[h][l];
-		this.nbAnimeaux = nbAnimeaux;
+		this.nbAnimaux = nbAnimaux;
 	}
 	
 	public boolean horsLimite(int x, int y) {
@@ -27,7 +27,7 @@ public class Grille {
 			if(plateau[i][j].piece instanceof Animal) {
 				Animal a=(Animal)this.plateau[i][j].piece;
 				a.estAuSol=true;
-				this.nbAnimeaux--;
+				this.nbAnimaux--;
 			}
 		}
 	}
@@ -158,5 +158,8 @@ public class Grille {
 		if(!peutSupprimer(i,j)){
 			remplitGrille();
 		}
+	}
+	public void affichage(){
+	//Cette fonction affiche la grille actuelle.
 	}
 }
