@@ -58,7 +58,7 @@ public class Grille {
 				if(y==0|| y<plateau[x].length-1) {
 					if(val==plateau[x-1][y].getValeur()) {
 						adj++;
-												adj+=adjacences(x-1,y);					
+						adj+=adjacences(x-1,y);
 					}
 					if(val==plateau[x][y+1].getValeur()) {
 						adj++;
@@ -161,5 +161,12 @@ public class Grille {
 	}
 	public void affichage(){
 	//Cette fonction affiche la grille actuelle.
+		for(int i = 0; i < largeur; i++)
+		{
+			for(int j = 0; j < hauteur; j++)
+			{
+				
+			}
+		}
 	}
 }
