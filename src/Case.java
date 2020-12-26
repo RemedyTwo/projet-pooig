@@ -11,14 +11,14 @@ public class Case {
 		}
 	}
 	
-	/*public int getValeur() {
+	public String getValeur() {
 	//On identifie quelle pièce se trouve dans la case.
 		if(this.piece instanceof Cube) {
-			return ((Cube) this.piece).couleur+1;
+			return ((Cube) this.piece).couleur;
 		}else if (this.piece instanceof Animal) {
-			return 5;
+			return "animal";
 		}else{
-			return 0;
+			return null;
 		}
-	}*/
+	}
 }

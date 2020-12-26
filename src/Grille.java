@@ -33,6 +33,82 @@ public class Grille {
 		}
 	}
 
+	public int adjacences(int x,int y) {
+		//On regarde si un cube se trouvant dans l'une des cases du tableau possède d'autres cubes de la même couleur dans les cases adjacentes. Si tel est le cas, il faut alors aussi vérifier les cases adjacentes de ces cubes. On ne prend pas en compte les diagonales.
+			String val=plateau[x][y].getValeur();
+			int adj=0;
+			boolean peutSuppr=false;
+			if(!horsLimite(x,y) && plateau[x][y].piece instanceof Cube) {
+				if(x==0 || x<plateau.length-1) {
+					if(y==0 || y<plateau[x].length-1) {
+						if(val==plateau[x+1][y].getValeur()) {
+							adj++;
+							adj+=adjacences(x+1,y);					
+						}
+						if(val==plateau[x][y+1].getValeur()) {
+							adj++;
+							adj+=adjacences(x,y+1);
+						}
+					}else if(y==plateau[x].length-1 || y>0) {
+						if(val==plateau[x][y-1].getValeur()) {
+							adj++;
+							adj+=adjacences(x,y-1);
+						}
+					}
+				}else if(x==plateau.length-1) {
+					if(y==0|| y<plateau[x].length-1) {
+						if(val==plateau[x-1][y].getValeur()) {
+							adj++;
+							adj+=adjacences(x-1,y);					
+						}
+						if(val==plateau[x][y+1].getValeur()) {
+							adj++;
+							adj+=adjacences(x,y+1);
+						}
+					}else if(y==plateau[x].length-1 || y>0) {
+						if(val==plateau[x-1][y].getValeur()) {
+							adj++;
+							adj+=adjacences(x-1,y);
+						}
+						if(val==plateau[x][y-1].getValeur()) {
+							adj++;
+							adj+=adjacences(x,y-1);
+						}
+					}
+				}else {
+					if(y==0|| y<plateau[x].length-1) {
+						if(val==plateau[x-1][y].getValeur()) {
+							adj++;
+							adj+=adjacences(x-1,y);					
+						}
+						if(val==plateau[x][y+1].getValeur()) {
+							adj++;
+							adj+=adjacences(x,y+1);
+						}
+						if(val==plateau[x+1][y].getValeur()) {
+							adj++;
+							adj+=adjacences(x+1,y);					
+						}
+					}else if(y==plateau[x].length-1 || y>0) {
+						if(val==plateau[x-1][y].getValeur()) {
+							adj++;
+							adj+=adjacences(x-1,y);
+						}
+						if(val==plateau[x+1][y].getValeur()) {
+							adj++;
+							adj+=adjacences(x+1,y);
+						}
+						if(val==plateau[x][y-1].getValeur()) {
+							adj++;
+							adj+=adjacences(x,y-1);
+						}
+					}
+				}
+			}
+			//Si l'entier retourné est supérieur à 3, il est possible de supprimer les cubes adjacents.
+			return adj;
+		}
+
 	public int[][] adjacentes(int x, int y){ //aiguilles d'une montre en commencant a 12:00
 		int[][] adjacentes = {
 			{x, y+1},
@@ -81,7 +157,7 @@ public class Grille {
 	
 	public void supprimeCube(int x,int y){
 	//Cette fonction permet de supprimer un cube et fait descendre les cubes qui sont au dessus.
-		if(!horsLimite(x,y) && plateau[x][y].getValeur()>0 && plateau[x][y].getValeur()<5 && peutSupprimer(x,y)){
+		if(!horsLimite(x,y) && plateau[x][y].getValeur()!=null && plateau[x][y].getValeur()!="animal" && peutSupprimer(x,y)){
 			plateau[x][y]=null;
 			if(!plateau[x][y-1].estVide){
 				for(int i=y;i>0;i--){
