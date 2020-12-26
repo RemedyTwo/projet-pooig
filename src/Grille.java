@@ -31,81 +31,28 @@ public class Grille {
 			}
 		}
 	}
+
+	public int[][] adjacentes(int x, int y){
+		int[][] adjacentes = {
+			{x, y+1},
+			{x, y},
+			{x, y-1},
+			{x-1, y}
+		};
+		return adjacentes;
+	}
 	
-	public int adjacences(int x,int y) {
-	//On regarde si un cube se trouvant dans l'une des cases du tableau possède d'autres cubes de la même couleur dans les cases adjacentes. Si tel est le cas, il faut alors aussi vérifier les cases adjacentes de ces cubes. On ne prend pas en compte les diagonales.
-		int val=plateau[x][y].getValeur();
-		int adj=0;
-		boolean peutSuppr=false;
-		if(!horsLimite(x,y) && plateau[x][y].piece instanceof Cube) {
-			if(x==0 || x<plateau.length-1) {
-				if(y==0 || y<plateau[x].length-1) {
-					if(val==plateau[x+1][y].getValeur()) {
-						adj++;
-						adj+=adjacences(x+1,y);					
-					}
-					if(val==plateau[x][y+1].getValeur()) {
-						adj++;
-						adj+=adjacences(x,y+1);
-					}
-				}else if(y==plateau[x].length-1 || y>0) {
-					if(val==plateau[x][y-1].getValeur()) {
-						adj++;
-						adj+=adjacences(x,y-1);
-					}
-				}
-			}else if(x==plateau.length-1) {
-				if(y==0|| y<plateau[x].length-1) {
-					if(val==plateau[x-1][y].getValeur()) {
-						adj++;
-						adj+=adjacences(x-1,y);
-					}
-					if(val==plateau[x][y+1].getValeur()) {
-						adj++;
-						adj+=adjacences(x,y+1);
-					}
-				}else if(y==plateau[x].length-1 || y>0) {
-					if(val==plateau[x-1][y].getValeur()) {
-						adj++;
-						adj+=adjacences(x-1,y);
-					}
-					if(val==plateau[x][y-1].getValeur()) {
-						adj++;
-						adj+=adjacences(x,y-1);
-					}
-				}
-			}else {
-				if(y==0|| y<plateau[x].length-1) {
-					if(val==plateau[x-1][y].getValeur()) {
-						adj++;
-						adj+=adjacences(x-1,y);					
-					}
-					if(val==plateau[x][y+1].getValeur()) {
-						adj++;
-						adj+=adjacences(x,y+1);
-					}
-					if(val==plateau[x+1][y].getValeur()) {
-						adj++;
-						adj+=adjacences(x+1,y);					
-					}
-				}else if(y==plateau[x].length-1 || y>0) {
-					if(val==plateau[x-1][y].getValeur()) {
-						adj++;
-						adj+=adjacences(x-1,y);
-					}
-					if(val==plateau[x+1][y].getValeur()) {
-						adj++;
-						adj+=adjacences(x+1,y);
-					}
-					if(val==plateau[x][y-1].getValeur()) {
-						adj++;
-						adj+=adjacences(x,y-1);
-					}
-				}
+	public int[][] cases_adjacentes(int x, int y) {
+		int[][] cases_adjacentes;
+		Case[][] etat = plateau;
+		int[][] adj = adjacentes(x, y);
+		Case c = etat[x][y];
+		etat[x][y] = null;
+		for(int i = 0; i < 3; i++){
+			if(etat[adj[i][0]][adj[i][1]].piece instanceof Cube){
+				
 			}
 		}
-		//Si l'entier retourné est supérieur à 3, il est possible de supprimer les cubes adjacents.
-		return adj;
 	}
 	
 	public boolean peutSupprimer(int x,int y){
@@ -115,18 +62,19 @@ public class Grille {
 	
 	public void supprimeCube(int x,int y){
 	//Cette fonction permet de supprimer un cube et fait descendre les cubes qui sont au dessus.
-	if(!horsLimite(x,y) && plateau[x][y].getValeur()>0 && plateau[x][y].getValeur()<5 && peutSupprimer(x,y)){
-		plateau[x][y]=null;
-		if(!plateau[x][y-1].estVide){
-			for(int i=y;i>0;i--){
-				int tmp=plateau[x][i];
-				plateau[x][i]=plateau[x][i-1];
-				plateau[x][i-1]=tmp;
+		if(!horsLimite(x,y) && plateau[x][y].getValeur()>0 && plateau[x][y].getValeur()<5 && peutSupprimer(x,y)){
+			plateau[x][y]=null;
+			if(!plateau[x][y-1].estVide){
+				for(int i=y;i>0;i--){
+					Case tmp=plateau[x][i];
+					plateau[x][i]=plateau[x][i-1];
+					plateau[x][i-1]=tmp;
+				}
 			}
 		}
 	}
 	
-	public void remplitGrille(){
+	/*public void remplitGrille(){
 	//Avec cette fonction on remplit la grille avec des cubes de couleurs aléatoires.
 		Random r=new Random();
 		int x=r.nextInt(1,5);
@@ -149,7 +97,7 @@ public class Grille {
 	//Si il n'y a aucun déplacement possible, on retrie le tableau.
 		int i=0;
 		int j=1;
-		while(i<plateau.length && !peutSupprimer(i,j){
+		while(i<plateau.length && !peutSupprimer(i,j)){
 			while(j<plateau[i].length){
 				j++;
 			}
@@ -158,15 +106,28 @@ public class Grille {
 		if(!peutSupprimer(i,j)){
 			remplitGrille();
 		}
-	}
+	}*/
+
 	public void affichage(){
 	//Cette fonction affiche la grille actuelle.
-		for(int i = 0; i < largeur; i++)
-		{
-			for(int j = 0; j < hauteur; j++)
-			{
-				
+		System.out.print("  | ");
+		for(int i = 0; i < hauteur; i++){
+			System.out.print(i+1 + " | ");
+		}
+		System.out.println("");
+		for(int i = 0; i < largeur; i++){ // ligne
+			System.out.print(i+1 + " | ");
+			for(int j = 0; j < hauteur; j++){ // collone
+				if(plateau[i][j].piece instanceof Animal){ //TODO: différencier les animaux 
+
+					System.out.print("A");
+				}
+				if(plateau[i][j].piece instanceof Cube){ //TODO: différencier les cubes par couleur
+					System.out.print("x");
+				}
+				System.out.print(" | ");
 			}
+			System.out.println("");
 		}
 	}
 }

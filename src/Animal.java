@@ -1,5 +1,5 @@
 
-public class Animal extends Pieces{
+public class Animal extends Piece{
 	public boolean estAuSol;
 	
 	public Animal() {

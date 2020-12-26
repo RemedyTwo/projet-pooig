@@ -16,7 +16,7 @@ public class Joueur {
 	//On vérifie si le joueur a gagné ou perdu la partie.
 		if(nbTours==0){
 			System.out.println("Perdu !");
-			fini=true
+			fini=true;
 		}else if(grille.nbAnimaux==0){
 			System.out.println("Vous avez gagné!");
 			fini=true;

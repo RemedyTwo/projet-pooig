@@ -1,9 +1,9 @@
 public class Case {
 //Ce code gère une case du plateau.
 	boolean estVide,visible;
-	Pieces piece;
+	Piece piece;
 	
-	public Case(boolean estVide,Pieces piece,boolean visible) {
+	public Case(boolean estVide,Piece piece,boolean visible) {
 		this.estVide=estVide;
 		this.visible=visible;
 		if(!estVide && visible) {
@@ -11,7 +11,7 @@ public class Case {
 		}
 	}
 	
-	public int getValeur() {
+	/*public int getValeur() {
 	//On identifie quelle pièce se trouve dans la case.
 		if(this.piece instanceof Cube) {
 			return ((Cube) this.piece).couleur+1;
@@ -20,5 +20,5 @@ public class Case {
 		}else{
 			return 0;
 		}
-	}
+	}*/
 }
