@@ -6,19 +6,19 @@ public class Cube extends Piece{
 		this.couleur=couleur;
 	}
 
-	public class Rouge extends Cube{
+	static class Rouge extends Cube{
 		public Rouge(){
 			super("rouge");
 		}
 	}
 
-	public class Vert extends Cube{
+	static class Vert extends Cube{
 		public Vert(){
 			super("vert");
 		}
 	}
 
-	public class Bleu extends Cube{
+	static class Bleu extends Cube{
 		public Bleu(){
 			super("bleu");
 		}

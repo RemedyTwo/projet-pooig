@@ -1,4 +1,3 @@
-
 public class Animal extends Piece{
 	public boolean estAuSol;
 	

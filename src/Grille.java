@@ -33,7 +33,7 @@ public class Grille {
 		}
 	}
 
-	public int[][] adjacentes(int x, int y){
+	public int[][] adjacentes(int x, int y){ //aiguilles d'une montre en commencant a 12:00
 		int[][] adjacentes = {
 			{x, y+1},
 			{x, y},
@@ -44,7 +44,7 @@ public class Grille {
 	}
 	
 	public int[][] cases_adjacentes(int x, int y) {
-		ArrayList<ArrayList<Integer>> cases_adjacentes = new ArrayList<>();
+		ArrayList<int[]> cases_adjacentes = new ArrayList<>();
 		//int[][] cases_adjacentes;
 		Case[][] etat = plateau;
 		int[][] adj = adjacentes(x, y);
@@ -52,12 +52,27 @@ public class Grille {
 		etat[x][y] = null;
 		for(int i = 0; i < 3; i++){
 			if(etat[adj[i][0]][adj[i][1]].piece instanceof Cube){
-				
+				int[] a = {adj[i][0], adj[i][1]};
+				cases_adjacentes.add(a);
+				cases_adjacentes.get(cases_adjacentes.size() - 1);
+				cases_adjacentes_r(adj[i][0], adj[i][1], etat, cases_adjacentes);
+			}
+		}
+		return (int[][]) cases_adjacentes.toArray();
+	}
+
+	public void cases_adjacentes_r(int x, int y, Case[][] etat, ArrayList<int[]> cases_adjacentes){
+		int[][] adj = adjacentes(x, y);
+		etat[x][y] = null;
+		for(int i = 0; i < 3; i++){
+			if(etat[adj[i][0]][adj[i][1]].piece instanceof Cube){
+				int[] a = {adj[i][0], adj[i][1]};
+				cases_adjacentes.add(a);
+				cases_adjacentes.get(cases_adjacentes.size() - 1);
+				cases_adjacentes_r(adj[i][0], adj[i][1], etat, cases_adjacentes);
 			}
 		}
 	}
-
-	public 
 	
 	public boolean peutSupprimer(int x,int y){
 		int i=adjacences(x,y);
@@ -127,7 +142,7 @@ public class Grille {
 					System.out.print("A");
 				}
 				if(plateau[i][j].piece instanceof Cube){ //TODO: différencier les cubes par couleur
-					System.out.print("x");
+					System.out.print(plateau[i][j].couleur);
 				}
 				System.out.print(" | ");
 			}
