@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Random;
 public class Grille {
 //Ce code gère la grille du jeu.
 
@@ -218,7 +217,7 @@ public class Grille {
 					System.out.print("A");
 				}
 				if(plateau[i][j].piece instanceof Cube){ //TODO: différencier les cubes par couleur
-					System.out.print(plateau[i][j].couleur);
+					System.out.print("x");
 				}
 				System.out.print(" | ");
 			}

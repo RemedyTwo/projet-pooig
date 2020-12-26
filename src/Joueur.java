@@ -27,6 +27,7 @@ public class Joueur {
 	//On joue un tour en entrant 2 entiers correspondant aux coordonnées d'un cube. si le cube sélectionné ne peut pas être supprimé, on relance le tour. A la fin du tour on vérifie si le jeu n'est pas fini et, dans le cas où il ne l'est pas, on joue le tour suivant.
 		while(!fini){
 			Scanner scanner = new Scanner(System.in); 
+			grille.affichage();
 			System.out.print("colonne :");
 			int x=scanner.nextInt();
 			System.out.println("\n");

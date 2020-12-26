@@ -10,6 +10,7 @@ public class Test {
             };
         Grille g = new Grille(plateau[0].length, plateau.length, 0);
         g.plateau = plateau;
-        g.affichage();
+        Joueur j = new Joueur(10, g);
+        j.tour();
     }
 }
