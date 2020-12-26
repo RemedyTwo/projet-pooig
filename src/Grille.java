@@ -33,81 +33,46 @@ public class Grille {
 	}
 
 	public int adjacences(int x,int y) {
-		//On regarde si un cube se trouvant dans l'une des cases du tableau possède d'autres cubes de la même couleur dans les cases adjacentes. Si tel est le cas, il faut alors aussi vérifier les cases adjacentes de ces cubes. On ne prend pas en compte les diagonales.
-			String val=plateau[x][y].getValeur();
-			int adj=0;
-			boolean peutSuppr=false;
-			if(!horsLimite(x,y) && plateau[x][y].piece instanceof Cube) {
-				if(x==0 || x<plateau.length-1) {
-					if(y==0 || y<plateau[x].length-1) {
-						if(val==plateau[x+1][y].getValeur()) {
-							adj++;
-							adj+=adjacences(x+1,y);					
-						}
-						if(val==plateau[x][y+1].getValeur()) {
-							adj++;
-							adj+=adjacences(x,y+1);
-						}
-					}else if(y==plateau[x].length-1 || y>0) {
-						if(val==plateau[x][y-1].getValeur()) {
-							adj++;
-							adj+=adjacences(x,y-1);
-						}
-					}
-				}else if(x==plateau.length-1) {
-					if(y==0|| y<plateau[x].length-1) {
-						if(val==plateau[x-1][y].getValeur()) {
-							adj++;
-							adj+=adjacences(x-1,y);					
-						}
-						if(val==plateau[x][y+1].getValeur()) {
-							adj++;
-							adj+=adjacences(x,y+1);
-						}
-					}else if(y==plateau[x].length-1 || y>0) {
-						if(val==plateau[x-1][y].getValeur()) {
-							adj++;
-							adj+=adjacences(x-1,y);
-						}
-						if(val==plateau[x][y-1].getValeur()) {
-							adj++;
-							adj+=adjacences(x,y-1);
-						}
-					}
-				}else {
-					if(y==0|| y<plateau[x].length-1) {
-						if(val==plateau[x-1][y].getValeur()) {
-							adj++;
-							adj+=adjacences(x-1,y);					
-						}
-						if(val==plateau[x][y+1].getValeur()) {
-							adj++;
-							adj+=adjacences(x,y+1);
-						}
-						if(val==plateau[x+1][y].getValeur()) {
-							adj++;
-							adj+=adjacences(x+1,y);					
-						}
-					}else if(y==plateau[x].length-1 || y>0) {
-						if(val==plateau[x-1][y].getValeur()) {
-							adj++;
-							adj+=adjacences(x-1,y);
-						}
-						if(val==plateau[x+1][y].getValeur()) {
-							adj++;
-							adj+=adjacences(x+1,y);
-						}
-						if(val==plateau[x][y-1].getValeur()) {
-							adj++;
-							adj+=adjacences(x,y-1);
-						}
-					}
-				}
+		//On regarde si un cube se trouvant dans l'une des cases du tableau possède d'autres cubes de la même couleur dans les cases adjacentes. Si tel est le cas, il faut alors aussi vérifier les cases adjacentes de ces cubes. On ne prend pas en compte les diagonales.	
+		String val=plateau[x][y].getValeur();
+		int adj=0;
+		Piece p1=plateau[x][y].piece;
+		if(!horsLimite(x,y) && plateau[x][y].piece instanceof Cube) {
+			if(x!=plateau.length && val==plateau[x+1][y].getValeur()) {
+				adj++;
+				//afin d'éviter que deux cases adjacentes s'appellent récursivement à l'infini, on met la valeur de la case présente à null avant d'appeller la fonction sur une autre case.On stocke cette valeur dans une pièce p1, afin que la case reprenne sa valeur d'origine et puisse continuer de scanner le tableau.
+				plateau[x][y].piece=null;
+				adj+=adjacences(x+1,y)-1;
+				plateau[x][y].piece=p1;
+			}					
+			if(x!=0 && val==plateau[x-1][y].getValeur()) {
+				adj++;
+				plateau[x][y].piece=null;
+				adj+=adjacences(x-1,y)-1;
+				plateau[x][y].piece=p1;					
 			}
-			//Si l'entier retourné est supérieur à 3, il est possible de supprimer les cubes adjacents.
-			return adj;
+			if(y!=plateau[x].length && val==plateau[x][y+1].getValeur()) {
+				adj++;
+				plateau[x][y].piece=null;
+				adj+=adjacences(x,y+1)-1;
+				plateau[x][y].piece=p1;
+			}
+			if(y!=0 && val==plateau[x][y-1].getValeur()) {
+				adj++;
+				plateau[x][y].piece=null;
+				adj+=adjacences(x,y-1)-1;
+				plateau[x][y].piece=p1;
+			}
 		}
-
+		//Si l'entier retourné est supérieur ou égal à 2, il est possible de supprimer les cubes adjacents.
+		return adj;
+	}
+	
+	public boolean peutSupprimer(int x,int y){
+		int i=adjacences(x,y);
+		return (i>=2);
+	}
+		
 	public int[][] adjacentes(int x, int y){ //aiguilles d'une montre en commencant a 12:00
 		int[][] adjacentes = {
 			{x, y+1},
@@ -147,11 +112,6 @@ public class Grille {
 				cases_adjacentes_r(adj[i][0], adj[i][1], etat, cases_adjacentes);
 			}
 		}
-	}
-	
-	public boolean peutSupprimer(int x,int y){
-		int i=adjacences(x,y);
-		return (i>=3);
 	}
 	
 	public void supprimeCube(int x,int y){
