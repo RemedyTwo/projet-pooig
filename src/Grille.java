@@ -39,7 +39,7 @@ public class Grille {
 		int adj=0;
 		Piece p1=plateau[x][y].piece;
 		if(!horsLimite(x,y) && plateau[x][y].piece instanceof Cube) {
-			if(x!=plateau.length && val==plateau[x+1][y].getValeur()) {
+			if(x!=plateau.length-1 && val==plateau[x+1][y].getValeur()) {
 				adj++;
 				//afin d'éviter que deux cases adjacentes s'appellent récursivement à l'infini, on met la valeur de la case présente à null avant d'appeller la fonction sur une autre case.On stocke cette valeur dans une pièce p1, afin que la case reprenne sa valeur d'origine et puisse continuer de scanner le tableau.
 				plateau[x][y].piece=null;
@@ -52,7 +52,7 @@ public class Grille {
 				adj+=adjacences(x-1,y)-1;
 				plateau[x][y].piece=p1;					
 			}
-			if(y!=plateau[x].length && val==plateau[x][y+1].getValeur()) {
+			if(y!=plateau[x].length-1 && val==plateau[x][y+1].getValeur()) {
 				adj++;
 				plateau[x][y].piece=null;
 				adj+=adjacences(x,y+1)-1;
