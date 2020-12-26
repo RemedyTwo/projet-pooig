@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 public class Grille {
 //Ce code gère la grille du jeu.
@@ -43,7 +44,8 @@ public class Grille {
 	}
 	
 	public int[][] cases_adjacentes(int x, int y) {
-		int[][] cases_adjacentes;
+		ArrayList<ArrayList<Integer>> cases_adjacentes = new ArrayList<>();
+		//int[][] cases_adjacentes;
 		Case[][] etat = plateau;
 		int[][] adj = adjacentes(x, y);
 		Case c = etat[x][y];
@@ -54,6 +56,8 @@ public class Grille {
 			}
 		}
 	}
+
+	public 
 	
 	public boolean peutSupprimer(int x,int y){
 		int i=adjacences(x,y);
