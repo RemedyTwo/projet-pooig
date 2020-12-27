@@ -173,7 +173,6 @@ public class Grille {
 	//Cette fonction permet de supprimer des cubes et fait descendre ceux qui sont au dessus.
 		if(!horsLimite(x,y) && plateau[x][y].getValeur()!=null && plateau[x][y].getValeur()!="animal" && peutSupprimer(x,y)){
 			plateau[x][y]=null;
-			
 			if(cotes[x][y][0]){
 				cotes[x+1][y][1]=false;
 				supprimeCube(x+1,y);
@@ -209,13 +208,6 @@ public class Grille {
 			}
 			if(cotes[x][y][3]){
 				cotes[x][y-1][2]=false;
-			}
-			if(!plateau[x][y-1].estVide){	
-				for(int i=y;i>0;i--){
-					Case tmp=plateau[x][i];
-					plateau[x][i]=plateau[x][i-1];
-					plateau[x][i-1]=tmp;
-				}
 			}
 		}
 	}
