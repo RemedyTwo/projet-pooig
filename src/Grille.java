@@ -205,6 +205,10 @@ public class Grille {
 		for(int i = 0; i < hauteur; i++){ // ligne
 			System.out.print(i + " | ");
 			for(int j = 0; j < largeur; j++){ // collone
+				if(plateau[i][j].piece == null)
+				{
+					System.out.print(" ");
+				}
 				if(plateau[i][j].piece instanceof Animal){ //TODO: différencier les animaux 
 
 					System.out.print("A");
