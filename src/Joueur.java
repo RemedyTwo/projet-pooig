@@ -2,7 +2,7 @@ import java.util.Scanner;
 public class Joueur {
 //Ce code prend les commandes du joueur et les éxecute.
 
-	public int nbTours;
+	public int nbTours,nbVies,score;
 	boolean fini;
 	public Grille grille;
 	
@@ -10,6 +10,8 @@ public class Joueur {
 		this.nbTours=nbTours;
 		this.fini=false;
 		this.grille=g;
+		this.score=0;
+		this.nbVies=3;
 	}
 	
 	public void finDuJeu(){

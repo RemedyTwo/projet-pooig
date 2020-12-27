@@ -6,6 +6,8 @@ public class Grille {
 	public Case[][]copie;
 	public int[][]adja;
 	public int hauteur, largeur, nbAnimaux;
+	boolean[][][] cotes;
+	//Le tableau cotes nous aidera à éliminer les cubes voisins de même couleur.
 	
 	public Grille(int h,int l, int nbAnimaux) {
 		this.hauteur = h;
@@ -14,6 +16,11 @@ public class Grille {
 		this.copie= new Case[h][l];
 		this.adja = new int[h][l];
 		this.nbAnimaux = nbAnimaux;
+		this.cotes=new boolean[h][l][4];
+		for(int i=0;i<h;i++){
+			for(int j=0;j<l;j++){
+				for(int k=0;k<4;k++){
+					cotes[i][j][k]=false;
 	}
 	
 	public boolean horsLimite(int x, int y) {
@@ -43,24 +50,32 @@ public class Grille {
 			if(x!=plateau.length-1 && val.equals(plateau[x+1][y].getValeur())) {
 				adj++;
 				//afin d'éviter que deux cases adjacentes s'appellent récursivement à l'infini, on met la valeur de la case présente à null avant d'appeller la fonction sur une autre case.On stocke cette valeur dans une pièce p1, afin que la case reprenne sa valeur d'origine et puisse continuer de scanner le tableau.
+				cotes[x][y][0]=true;
+				cotes[x+1][y][1]=true;
 				plateau[x][y].piece=null;
 				adj+=adja(x+1,y,0);
 				plateau[x][y].piece=null;
 			}					
 			if(x!=0 && val.equals(plateau[x-1][y].getValeur())) {
 				adj++;
+				cotes[x][y][1]=true;
+				cotes[x-1][y][0]=true;
 				plateau[x][y].piece=null;
 				adj+=adja(x-1,y,0);
 				plateau[x][y].piece=null;					
 			}
 			if(y!=plateau[x].length-1 && val.equals(plateau[x][y+1].getValeur())) {
 				adj++;
+				cotes[x][y][2]=true;
+				cotes[x][y+1][3]=true;
 				plateau[x][y].piece=null;
 				adj+=adja(x,y+1,0);
 				plateau[x][y].piece=null;
 			}
 			if(y!=0 && val.equals(plateau[x][y-1].getValeur())) {
 				adj++;
+				cotes[x][y][3]=true;
+				cotes[x][y-1][2]=true;
 				plateau[x][y].piece=null;
 				adj+=adja(x,y-1,0);
 				plateau[x][y].piece=null;
@@ -75,24 +90,31 @@ public class Grille {
 		if(!horsLimite(x,y) && plateau[x][y].piece instanceof Cube) {
 			if(x!=plateau.length-1 && val.equals(plateau[x+1][y].getValeur())) {
 				a++;
+				cotes[x][y][0]=true;
+				cotes[x+1][y][1]=true;
 				plateau[x][y].piece=null;
 				a+=adja(x+1,y,0);
 				plateau[x][y].piece=copie[x][y].piece;
 			}					
 			if(x!=0 && val.equals(plateau[x-1][y].getValeur())) {
-				a++;
+				a++;cotes[x][y][1]=true;
+				cotes[x-1][y][0]=true;
 				plateau[x][y].piece=null;
 				a+=adja(x-1,y,0);
 				plateau[x][y].piece=copie[x][y].piece;					
 			}
 			if(y!=plateau[x].length-1 && val.equals(plateau[x][y+1].getValeur())) {
 				a++;
+				cotes[x][y][2]=true;
+				cotes[x][y+1][3]=true;
 				plateau[x][y].piece=null;
 				a+=adja(x,y+1,0);
 				plateau[x][y].piece=copie[x][y].piece;
 			}
 			if(y!=0 && val.equals(plateau[x][y-1].getValeur())) {
 				a++;
+				cotes[x][y][3]=true;
+				cotes[x][y-1][2]=true;
 				plateau[x][y].piece=null;
 				a+=adja(x,y-1,0);
 				plateau[x][y].piece=copie[x][y].piece;
@@ -148,10 +170,47 @@ public class Grille {
 	}
 	
 	public void supprimeCube(int x,int y){
-	//Cette fonction permet de supprimer un cube et fait descendre les cubes qui sont au dessus.
+	//Cette fonction permet de supprimer des cubes et fait descendre ceux qui sont au dessus.
 		if(!horsLimite(x,y) && plateau[x][y].getValeur()!=null && plateau[x][y].getValeur()!="animal" && peutSupprimer(x,y)){
 			plateau[x][y]=null;
-			if(!plateau[x][y-1].estVide){
+			
+			if(cotes[x][y][0]){
+				cotes[x+1][y][1]=false;
+				supprimeCube(x+1,y);
+				cotes[x+1][y][1]=true;
+			}
+			if(cotes[x][y][1]){
+				cotes[x-1][y][0]=false;
+				supprimeCube(x-1,y);
+				cotes[x-1][y][0]=true;
+			}
+			if(cotes[x][y][2]){
+				cotes[x][y+1][3]=false;
+				supprimeCube(x,y+1);
+				cotes[x][y+1][3]=true;
+			}
+			if(cotes[x][y][3]){
+				cotes[x][y-1][2]=false;
+				supprimeCube(x,y-1);
+				cotes[x][y-1][2]=true;
+			}
+			//Avant de faire tomber les cases, on modifie les valeurs du tableau cotes correspondant aux côtés de la case sur laquelle on se trouve et à ceux des cases voisines menant vers cette case.
+			for(int j=0;j<4;j++){
+				cotes[x][y][j]=false;
+			}
+			if(cotes[x][y][0]){
+				cotes[x+1][y][1]=false;
+			}
+			if(cotes[x][y][1]){
+				cotes[x-1][y][0]=false;
+			}
+			if(cotes[x][y][2]){
+				cotes[x][y+1][3]=false;
+			}
+			if(cotes[x][y][3]){
+				cotes[x][y-1][2]=false;
+			}
+			if(!plateau[x][y-1].estVide){	
 				for(int i=y;i>0;i--){
 					Case tmp=plateau[x][i];
 					plateau[x][i]=plateau[x][i-1];
