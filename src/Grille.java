@@ -160,6 +160,25 @@ public class Grille {
 			}
 		}
 	}
+
+	public void supprime(int x, int y){
+		plateau[x][y]=null;
+	}
+
+	public void gravite(){
+		for(int i = 0; i < plateau.length; i++){
+			for(int j = 0; j < plateau[i].length; j++){
+				if(plateau[i][j].piece == null){
+					for(int k = i - 1; k > -1; k--){
+						System.out.print(
+							"plateau[k][j].piece = " + plateau[k][j].piece + "\nplateau[k+1][j].piece = " + plateau[k+1][j].piece + "\n");
+						plateau[k+1][j].piece = plateau[k][j].piece;
+						plateau[k][j].piece = null;
+					}
+				}
+			}
+		}
+	}
 	
 	/*public void remplitGrille(){
 	//Avec cette fonction on remplit la grille avec des cubes de couleurs aléatoires.
