@@ -3,7 +3,7 @@ public class Cube extends Piece{
 	public String couleur;
 	
 	public Cube(String couleur) {
-		this.couleur=couleur;
+		super(couleur);
 	}
 
 	static class Rouge extends Cube{

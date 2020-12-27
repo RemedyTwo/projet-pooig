@@ -9,14 +9,14 @@ public class Grille {
 	public Grille(int h,int l, int nbAnimaux) {
 		this.hauteur = h;
 		this.largeur = l;
-		this.plateau = new Case[h][l];
-		this.adja = new int[h][l];
+		this.plateau = new Case[l][h];
+		this.adja = new int[l][h];
 		this.nbAnimaux = nbAnimaux;
 	}
 	
 	public boolean horsLimite(int x, int y) {
 	//On vérifie que les coordonnées entrées respectent les dimensions du plateau. 
-		if(x>=0 && x < this.hauteur && y >= 0 && y < this.largeur) return false;
+		if(x>=0 && x < this.largeur && y >= 0 && y < this.hauteur) return false;
 		return true;
 	}
 	
@@ -32,35 +32,34 @@ public class Grille {
 		}
 	}
 
-	public int adjacences(int x,int y) {
+	public int adjacences(int x,int y, int adj){
 		//On regarde si un cube se trouvant dans l'une des cases du tableau possède d'autres cubes de la même couleur dans les cases adjacentes. Si tel est le cas, il faut alors aussi vérifier les cases adjacentes de ces cubes. On ne prend pas en compte les diagonales.	
 		String val=plateau[x][y].getValeur();
-		int adj=0;
 		Piece p1=plateau[x][y].piece;
 		if(!horsLimite(x,y) && plateau[x][y].piece instanceof Cube) {
-			if(x!=plateau.length && val==plateau[x+1][y].getValeur()) {
+			if(x!=plateau.length - 1 && val==plateau[x+1][y].getValeur()) {
 				adj++;
 				//afin d'éviter que deux cases adjacentes s'appellent récursivement à l'infini, on met la valeur de la case présente à null avant d'appeller la fonction sur une autre case.On stocke cette valeur dans une pièce p1, afin que la case reprenne sa valeur d'origine et puisse continuer de scanner le tableau.
 				plateau[x][y].piece=null;
-				adj+=adjacences(x+1,y)-1;
+				adj+=adjacences(x+1,y, adj)-1;
 				plateau[x][y].piece=p1;
 			}					
 			if(x!=0 && val==plateau[x-1][y].getValeur()) {
 				adj++;
 				plateau[x][y].piece=null;
-				adj+=adjacences(x-1,y)-1;
+				adj+=adjacences(x-1,y, adj)-1;
 				plateau[x][y].piece=p1;					
 			}
-			if(y!=plateau[x].length && val==plateau[x][y+1].getValeur()) {
+			if(y!=plateau[x].length - 1 && val==plateau[x][y+1].getValeur()) {
 				adj++;
 				plateau[x][y].piece=null;
-				adj+=adjacences(x,y+1)-1;
+				adj+=adjacences(x,y+1, adj)-1;
 				plateau[x][y].piece=p1;
 			}
 			if(y!=0 && val==plateau[x][y-1].getValeur()) {
 				adj++;
 				plateau[x][y].piece=null;
-				adj+=adjacences(x,y-1)-1;
+				adj+=adjacences(x,y-1, adj)-1;
 				plateau[x][y].piece=p1;
 			}
 		}
@@ -69,7 +68,7 @@ public class Grille {
 	}
 	
 	public boolean peutSupprimer(int x,int y){
-		int i=adjacences(x,y);
+		int i=adjacences(x,y, 0);
 		return (i>=2);
 	}
 		
@@ -165,19 +164,19 @@ public class Grille {
 	public void affichage(){
 	//Cette fonction affiche la grille actuelle.
 		System.out.print("  | ");
-		for(int i = 0; i < hauteur; i++){
-			System.out.print(i+1 + " | ");
+		for(int i = 0; i < largeur; i++){
+			System.out.print(i + " | ");
 		}
 		System.out.println("");
-		for(int i = 0; i < largeur; i++){ // ligne
-			System.out.print(i+1 + " | ");
-			for(int j = 0; j < hauteur; j++){ // collone
+		for(int i = 0; i < hauteur; i++){ // ligne
+			System.out.print(i + " | ");
+			for(int j = 0; j < largeur; j++){ // collone
 				if(plateau[i][j].piece instanceof Animal){ //TODO: différencier les animaux 
 
 					System.out.print("A");
 				}
 				if(plateau[i][j].piece instanceof Cube){ //TODO: différencier les cubes par couleur
-					System.out.print("x");
+					System.out.print(plateau[i][j].piece.nom.charAt(0));
 				}
 				System.out.print(" | ");
 			}
