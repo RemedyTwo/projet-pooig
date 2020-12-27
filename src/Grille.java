@@ -161,6 +161,10 @@ public class Grille {
 		}
 	}
 
+	public void supprime(int x, int y){
+		plateau[x][y]=null;
+	}
+
 	public void gravite(){
 		for(int i = 0; i < plateau.length; i++){
 			for(int j = 0; j < plateau[i].length; j++){
