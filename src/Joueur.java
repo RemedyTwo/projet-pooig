@@ -16,7 +16,7 @@ public class Joueur {
 	//On vérifie si le joueur a gagné ou perdu la partie.
 		if(nbTours==0){
 			System.out.println("Perdu !");
-			fini=true
+			fini=true;
 		}else if(grille.nbAnimaux==0){
 			System.out.println("Vous avez gagné!");
 			fini=true;
@@ -27,6 +27,7 @@ public class Joueur {
 	//On joue un tour en entrant 2 entiers correspondant aux coordonnées d'un cube. si le cube sélectionné ne peut pas être supprimé, on relance le tour. A la fin du tour on vérifie si le jeu n'est pas fini et, dans le cas où il ne l'est pas, on joue le tour suivant.
 		while(!fini){
 			Scanner scanner = new Scanner(System.in); 
+			grille.affichage();
 			System.out.print("colonne :");
 			int x=scanner.nextInt();
 			System.out.println("\n");

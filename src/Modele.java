@@ -1,1 +1,3 @@
-public class Modele{}
+public class Modele{
+
+}
