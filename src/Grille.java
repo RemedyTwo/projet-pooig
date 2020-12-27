@@ -165,8 +165,11 @@ public class Grille {
 		for(int i = 0; i < plateau.length; i++){
 			for(int j = 0; j < plateau[i].length; j++){
 				if(plateau[i][j].piece == null){
-					for(int k = j - 1; k >= 0; k--){
-						plateau[i][k+1].piece = plateau[i][k].piece;
+					for(int k = i - 1; k > -1; k--){
+						System.out.print(
+							"plateau[k][j].piece = " + plateau[k][j].piece + "\nplateau[k+1][j].piece = " + plateau[k+1][j].piece + "\n");
+						plateau[k+1][j].piece = plateau[k][j].piece;
+						plateau[k][j].piece = null;
 					}
 				}
 			}

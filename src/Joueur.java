@@ -35,6 +35,7 @@ public class Joueur {
 			int y=scanner.nextInt();
 			if(grille.peutSupprimer(x,y)){
 				grille.supprimeCube(x,y);
+				grille.gravite();
 			}else{
 				System.out.println("Tour invalide");
 			}
