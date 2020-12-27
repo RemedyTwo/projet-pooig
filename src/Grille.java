@@ -45,25 +45,25 @@ public class Grille {
 				//afin d'éviter que deux cases adjacentes s'appellent récursivement à l'infini, on met la valeur de la case présente à null avant d'appeller la fonction sur une autre case.On stocke cette valeur dans une pièce p1, afin que la case reprenne sa valeur d'origine et puisse continuer de scanner le tableau.
 				plateau[x][y].piece=null;
 				adj+=adja(x+1,y,0);
-				plateau[x][y].piece=copie[x][y].piece;
+				plateau[x][y].piece=null;
 			}					
 			if(x!=0 && val.equals(plateau[x-1][y].getValeur())) {
 				adj++;
 				plateau[x][y].piece=null;
 				adj+=adja(x-1,y,0);
-				plateau[x][y].piece=copie[x][y].piece;					
+				plateau[x][y].piece=null;					
 			}
 			if(y!=plateau[x].length-1 && val.equals(plateau[x][y+1].getValeur())) {
 				adj++;
 				plateau[x][y].piece=null;
 				adj+=adja(x,y+1,0);
-				plateau[x][y].piece=copie[x][y].piece;
+				plateau[x][y].piece=null;
 			}
 			if(y!=0 && val.equals(plateau[x][y-1].getValeur())) {
 				adj++;
 				plateau[x][y].piece=null;
 				adj+=adja(x,y-1,0);
-				plateau[x][y].piece=copie[x][y].piece;
+				plateau[x][y].piece=null;
 			}
 		}
 		//Si l'entier retourné est supérieur ou égal à 1, il est possible de supprimer les cubes adjacents.
