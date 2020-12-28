@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 public class Grille {
 //Ce code gère la grille du jeu.
@@ -9,18 +10,21 @@ public class Grille {
 	boolean[][][] cotes;
 	//Le tableau cotes nous aidera à éliminer les cubes voisins de même couleur.
 	
-	public Grille(int h,int l, int nbAnimaux) {
+	public Grille(int l,int h, int nbAnimaux) {
 		this.hauteur = h;
 		this.largeur = l;
-		this.plateau = new Case[h][l];
-		this.copie= new Case[h][l];
-		this.adja = new int[h][l];
+		this.plateau = new Case[l][h];
+		this.copie= new Case[l][h];
+		this.adja = new int[l][h];
 		this.nbAnimaux = nbAnimaux;
-		this.cotes=new boolean[h][l][4];
-		for(int i=0;i<h;i++){
-			for(int j=0;j<l;j++){
+		this.cotes=new boolean[l][h][4];
+		for(int i=0;i<l;i++){
+			for(int j=0;j<h;j++){
 				for(int k=0;k<4;k++){
 					cotes[i][j][k]=false;
+				}
+			}
+		}
 	}
 	
 	public boolean horsLimite(int x, int y) {
@@ -54,7 +58,7 @@ public class Grille {
 				cotes[x+1][y][1]=true;
 				plateau[x][y].piece=null;
 				adj+=adja(x+1,y,0);
-				plateau[x][y].piece=null;
+				plateau[x][y].piece=copie[x][y].piece;
 			}					
 			if(x!=0 && val.equals(plateau[x-1][y].getValeur())) {
 				adj++;
@@ -62,7 +66,7 @@ public class Grille {
 				cotes[x-1][y][0]=true;
 				plateau[x][y].piece=null;
 				adj+=adja(x-1,y,0);
-				plateau[x][y].piece=null;					
+				plateau[x][y].piece=copie[x][y].piece;					
 			}
 			if(y!=plateau[x].length-1 && val.equals(plateau[x][y+1].getValeur())) {
 				adj++;
@@ -70,7 +74,7 @@ public class Grille {
 				cotes[x][y+1][3]=true;
 				plateau[x][y].piece=null;
 				adj+=adja(x,y+1,0);
-				plateau[x][y].piece=null;
+				plateau[x][y].piece=copie[x][y].piece;
 			}
 			if(y!=0 && val.equals(plateau[x][y-1].getValeur())) {
 				adj++;
@@ -78,7 +82,7 @@ public class Grille {
 				cotes[x][y-1][2]=true;
 				plateau[x][y].piece=null;
 				adj+=adja(x,y-1,0);
-				plateau[x][y].piece=null;
+				plateau[x][y].piece=copie[x][y].piece;
 			}
 		}
 		//Si l'entier retourné est supérieur ou égal à 1, il est possible de supprimer les cubes adjacents.
@@ -131,49 +135,117 @@ public class Grille {
 	public int[][] adjacentes(int x, int y){ //aiguilles d'une montre en commencant a 12:00
 		int[][] adjacentes = {
 			{x, y+1},
-			{x, y},
+			{x+1, y},
 			{x, y-1},
 			{x-1, y}
 		};
-		return adjacentes;
-	}
-	
-	public int[][] cases_adjacentes(int x, int y) {
-		ArrayList<int[]> cases_adjacentes = new ArrayList<>();
-		//int[][] cases_adjacentes;
-		Case[][] etat = plateau;
-		int[][] adj = adjacentes(x, y);
-		Case c = etat[x][y];
-		etat[x][y] = null;
-		for(int i = 0; i < 3; i++){
-			if(etat[adj[i][0]][adj[i][1]].piece instanceof Cube){
-				int[] a = {adj[i][0], adj[i][1]};
-				cases_adjacentes.add(a);
-				cases_adjacentes.get(cases_adjacentes.size() - 1);
-				cases_adjacentes_r(adj[i][0], adj[i][1], etat, cases_adjacentes);
-			}
-		}
-		return (int[][]) cases_adjacentes.toArray();
+		return filtre_adjacentes_coordonnees(adjacentes, x, y);
 	}
 
-	public void cases_adjacentes_r(int x, int y, Case[][] etat, ArrayList<int[]> cases_adjacentes){
+	public int[][] filtre_adjacentes_coordonnees(int[][] adjacentes, int x, int y){
+		ArrayList<Integer> filtre = new ArrayList<>();
+		for(int i = 0; i < adjacentes.length; i++){
+				if(adjacentes[i][0] < largeur && adjacentes[i][1] < hauteur){
+					filtre.add(i);
+				}
+		}
+		int[][] adjacentes_filtres = new int[filtre.size()][2];
+		for(int i = 0; i < filtre.size(); i++){
+			for(int j = 0; j < 2; j++){
+				adjacentes_filtres[i][j] = adjacentes[filtre.get(i)][j];
+			}
+		}
+		return filtre_adjacentes_couleur(adjacentes_filtres, x, y);
+	}
+
+	public int[][] filtre_adjacentes_couleur(int[][] adjacentes, int x, int y){
+		ArrayList<Integer> filtre = new ArrayList<>();
+		for(int i = 0; i < adjacentes.length; i++){
+			if(plateau[adjacentes[i][0]][adjacentes[i][1]].piece == null || plateau[adjacentes[i][0]][adjacentes[i][1]].piece.nom == "animal")
+			{
+
+			}else if(plateau[adjacentes[i][0]][adjacentes[i][1]].piece.nom == plateau[x][y].piece.nom){
+				filtre.add(i);
+			}
+		}
+		int[][] adjacentes_filtres = new int[filtre.size()][2];
+		for(int i = 0; i < filtre.size(); i++){
+			for(int j = 0; j < 2; j++){
+				adjacentes_filtres[i][j] = adjacentes[filtre.get(i)][j];
+			}
+		}
+		return adjacentes_filtres;
+	}
+
+	/*public int[][] filtre_adjacentes(int x, int y, Case c, int[][] adjacentes){
+		for(int i = 0; i < adjacentes.length; i++){
+			for(int j = 0; j < adjacentes[i].length; j++){
+				if(plateau[adj[i][0]])
+			}
+		}
+	}*/
+	
+	public int[][] cases_adjacentes(int x, int y, Case[][] etat, ArrayList<int[]> cases_adjacentes){
+		if(cases_adjacentes == null && etat == null){
+			cases_adjacentes = new ArrayList<>();
+			etat = plateau;
+		}
 		int[][] adj = adjacentes(x, y);
 		etat[x][y] = null;
-		for(int i = 0; i < 3; i++){
-			if(etat[adj[i][0]][adj[i][1]].piece instanceof Cube){
+		for(int i = 0; i < adj.length; i++){
+			try{
+				if(etat[adj[i][0]][adj[i][1]].piece instanceof Cube){
 				int[] a = {adj[i][0], adj[i][1]};
 				cases_adjacentes.add(a);
 				cases_adjacentes.get(cases_adjacentes.size() - 1);
-				cases_adjacentes_r(adj[i][0], adj[i][1], etat, cases_adjacentes);
+				cases_adjacentes(adj[i][0], adj[i][1], etat, cases_adjacentes);
+				}
+			}catch(Exception e){
 			}
 		}
+		int[][] cases_adjacentes_tableau = cases_adjacentes.toArray(new int[0][0]);
+		return cases_adjacentes_tableau;
+	}
+
+	public int[][] cases_adjacentes_ignorer(int x, int y, ArrayList<int[]> liste_à_ignorer, ArrayList<int[]> cases_adjacentes){
+		if(cases_adjacentes == null && liste_à_ignorer == null){
+			cases_adjacentes = new ArrayList<>();
+			liste_à_ignorer = new ArrayList<>();
+		}
+		int[][] adj = adjacentes(x, y);
+		int[] coordonnees = {x, y};
+		liste_à_ignorer.add(coordonnees);;
+		for(int i = 0; i < adj.length; i++){
+			try{
+				int[] tmp = {adj[i][0], adj[i][1]};
+				if(verifier_si_deja_passe(liste_à_ignorer, tmp))
+					if(plateau[tmp[0]][tmp[1]].piece instanceof Cube){
+						int[] a = {adj[i][0], adj[i][1]};
+						cases_adjacentes.add(a);
+						cases_adjacentes.get(cases_adjacentes.size() - 1);
+						cases_adjacentes_ignorer(adj[i][0], adj[i][1], liste_à_ignorer, cases_adjacentes);
+				}
+			}catch(Exception e){
+			}
+		}
+		int[][] cases_adjacentes_tableau = cases_adjacentes.toArray(new int[0][0]);
+		return cases_adjacentes_tableau;
 	}
 	
+	public boolean verifier_si_deja_passe(ArrayList<int[]> liste_à_ignorer, int[] tmp){
+		for(int i = 0; i < liste_à_ignorer.size(); i++){
+			if(liste_à_ignorer.get(i) == tmp){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public void supprimeCube(int x,int y){
 	//Cette fonction permet de supprimer des cubes et fait descendre ceux qui sont au dessus.
 		if(!horsLimite(x,y) && plateau[x][y].getValeur()!=null && plateau[x][y].getValeur()!="animal" && peutSupprimer(x,y)){
 			plateau[x][y]=null;
-			
+
 			if(cotes[x][y][0]){
 				cotes[x+1][y][1]=false;
 				supprimeCube(x+1,y);
@@ -193,29 +265,6 @@ public class Grille {
 				cotes[x][y-1][2]=false;
 				supprimeCube(x,y-1);
 				cotes[x][y-1][2]=true;
-			}
-			//Avant de faire tomber les cases, on modifie les valeurs du tableau cotes correspondant aux côtés de la case sur laquelle on se trouve et à ceux des cases voisines menant vers cette case.
-			for(int j=0;j<4;j++){
-				cotes[x][y][j]=false;
-			}
-			if(cotes[x][y][0]){
-				cotes[x+1][y][1]=false;
-			}
-			if(cotes[x][y][1]){
-				cotes[x-1][y][0]=false;
-			}
-			if(cotes[x][y][2]){
-				cotes[x][y+1][3]=false;
-			}
-			if(cotes[x][y][3]){
-				cotes[x][y-1][2]=false;
-			}
-			if(!plateau[x][y-1].estVide){	
-				for(int i=y;i>0;i--){
-					Case tmp=plateau[x][i];
-					plateau[x][i]=plateau[x][i-1];
-					plateau[x][i-1]=tmp;
-				}
 			}
 		}
 	}

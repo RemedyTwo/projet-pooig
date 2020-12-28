@@ -13,12 +13,13 @@ public class Case {
 	
 	public String getValeur() {
 	//On identifie quelle pièce se trouve dans la case.
-		if(this.piece instanceof Cube) {
-			return this.piece.nom;
-		}else if (this.piece instanceof Animal) {
-			return "animal";
-		}else{
+		try{
+			if(this.piece.nom != null){
+				return this.piece.nom;
+			}
+		}catch(Exception e){
 			return null;
 		}
+		return null;
 	}
 }

@@ -35,6 +35,12 @@ public class Joueur {
 			System.out.println("\n");
 			System.out.print("ligne :");
 			int y=scanner.nextInt();
+			//grille.copie = grille.plateau;
+			for(int i = 0; i < grille.plateau.length; i++){
+				for(int j = 0; j < grille.plateau[0].length; j++){
+					grille.copie[i][j] = grille.plateau[i][j];
+				}
+			}
 			if(grille.peutSupprimer(x,y)){
 				grille.supprimeCube(x,y);
 				grille.gravite();
