@@ -2,16 +2,17 @@ import java.util.Scanner;
 public class Joueur {
 //Ce code prend les commandes du joueur et les éxecute.
 
-	public int nbTours,nbVies,score;
-	boolean fini;
+	public int nbTours, nbVies, score;
+	public boolean fini, robot;
 	public Grille grille;
 	
-	public Joueur(int nbTours,Grille g){
-		this.nbTours=nbTours;
-		this.fini=false;
-		this.grille=g;
-		this.score=0;
-		this.nbVies=3;
+	public Joueur(int nbTours, Grille g, boolean robot){
+		this.nbTours = nbTours;
+		this.fini = false;
+		this.grille = g;
+		this.score = 0;
+		this.nbVies = 3;
+		this.robot = robot;
 	}
 	
 	public void finDuJeu(){
@@ -22,6 +23,7 @@ public class Joueur {
 		}else if(grille.nbAnimaux==0){
 			System.out.println("Vous avez gagné!");
 			fini=true;
+			grille.affichage();
 		}
 	}
 
@@ -32,22 +34,35 @@ public class Joueur {
 			grille.affichage();
 			System.out.print("colonne :");
 			int x=scanner.nextInt();
-			System.out.println("\n");
+			System.out.println("");
 			System.out.print("ligne :");
 			int y=scanner.nextInt();
-			//grille.copie = grille.plateau;
-			for(int i = 0; i < grille.plateau.length; i++){
-				for(int j = 0; j < grille.plateau[0].length; j++){
-					grille.copie[i][j] = grille.plateau[i][j];
-				}
-			}
+			//scanner.close();
 			if(grille.peutSupprimer(x,y)){
 				grille.supprime(x,y);
 				grille.gravite();
 			}else{
 				System.out.println("Tour invalide");
 			}
+			grille.AnimalAuSol();
 			finDuJeu();
+			tour();
+		}
+	}
+
+	public void lanceJeu(){
+		if(!robot){
+			Scanner scanner = new Scanner(System.in); 
+			System.out.println("Voulez-vous jouer? (Y/N)");
+			String s=scanner.nextLine();
+			if(s.equals("Y")){
+				tour();
+			}if(s.equals ("N")){
+				System.out.println("D'accord, au revoir.");
+			}else{
+				System.out.println("Commande invalide");
+			}
+		}else{
 			tour();
 		}
 	}
