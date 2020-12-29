@@ -8,6 +8,7 @@ public class Grille {
 	public int[][]adja;
 	public int hauteur, largeur, nbAnimaux;
 	boolean[][][] cotes;
+	boolean[][] etat;
 	//Le tableau cotes nous aidera à éliminer les cubes voisins de même couleur.
 	
 	public Grille(int l,int h, int nbAnimaux) {
@@ -25,6 +26,23 @@ public class Grille {
 				}
 			}
 		}
+		construction_etat();
+	}
+
+	public void construction_etat(){
+		boolean[][] etat = new boolean[largeur][hauteur];
+		for(int i = 0; i < hauteur; i++){
+			for(int j = 0; j < largeur; j++){
+				try{
+					if(!plateau[i][j].estVide){
+						etat[i][j] = true;
+					}
+				}catch(Exception e){
+					etat[i][j] = false;
+				}
+			}
+		}
+		this.etat = etat;
 	}
 	
 	public boolean horsLimite(int x, int y) {
@@ -128,8 +146,36 @@ public class Grille {
 	}
 	
 	public boolean peutSupprimer(int x,int y){
-		int i=adjacences(x,y);
-		return (i>=1);
+		int[][] adjacents = adjacentes(x, y);
+		if(adjacents.length > 0){
+			return true;
+		}
+		return false;
+	}
+
+	public int[][] cases_adjacentes_ignorer(int x, int y, ArrayList<int[]> liste_à_ignorer, ArrayList<int[]> cases_adjacentes){
+		if(cases_adjacentes == null && liste_à_ignorer == null){
+			cases_adjacentes = new ArrayList<>();
+			liste_à_ignorer = new ArrayList<>();
+		}
+		int[][] adj = adjacentes(x, y);
+		int[] coordonnees = {x, y};
+		
+		liste_à_ignorer.add(coordonnees);;
+		for(int i = 0; i < adj.length; i++){
+			try{
+				int[] tmp = {adj[i][0], adj[i][1]};
+				if(verifier_si_deja_passe(liste_à_ignorer, tmp))
+					if(plateau[tmp[0]][tmp[1]].piece instanceof Cube){
+						int[] a = {adj[i][0], adj[i][1]};
+						cases_adjacentes.add(a);
+						cases_adjacentes_ignorer(adj[i][0], adj[i][1], liste_à_ignorer, cases_adjacentes);
+				}
+			}catch(Exception e){
+			}
+		}
+		int[][] cases_adjacentes_tableau = cases_adjacentes.toArray(new int[0][0]);
+		return cases_adjacentes_tableau;
 	}
 		
 	public int[][] adjacentes(int x, int y){ //aiguilles d'une montre en commencant a 12:00
@@ -161,12 +207,11 @@ public class Grille {
 	public int[][] filtre_adjacentes_couleur(int[][] adjacentes, int x, int y){
 		ArrayList<Integer> filtre = new ArrayList<>();
 		for(int i = 0; i < adjacentes.length; i++){
-			if(plateau[adjacentes[i][0]][adjacentes[i][1]].piece == null || plateau[adjacentes[i][0]][adjacentes[i][1]].piece.nom == "animal")
-			{
-
-			}else if(plateau[adjacentes[i][0]][adjacentes[i][1]].piece.nom == plateau[x][y].piece.nom){
+			try{
+				if(plateau[adjacentes[i][0]][adjacentes[i][1]].piece.nom == plateau[x][y].piece.nom){
 				filtre.add(i);
-			}
+				}
+			}catch(Exception e){}
 		}
 		int[][] adjacentes_filtres = new int[filtre.size()][2];
 		for(int i = 0; i < filtre.size(); i++){
@@ -176,14 +221,6 @@ public class Grille {
 		}
 		return adjacentes_filtres;
 	}
-
-	/*public int[][] filtre_adjacentes(int x, int y, Case c, int[][] adjacentes){
-		for(int i = 0; i < adjacentes.length; i++){
-			for(int j = 0; j < adjacentes[i].length; j++){
-				if(plateau[adj[i][0]])
-			}
-		}
-	}*/
 	
 	public int[][] cases_adjacentes(int x, int y, Case[][] etat, ArrayList<int[]> cases_adjacentes){
 		if(cases_adjacentes == null && etat == null){
@@ -206,35 +243,11 @@ public class Grille {
 		int[][] cases_adjacentes_tableau = cases_adjacentes.toArray(new int[0][0]);
 		return cases_adjacentes_tableau;
 	}
-
-	public int[][] cases_adjacentes_ignorer(int x, int y, ArrayList<int[]> liste_à_ignorer, ArrayList<int[]> cases_adjacentes){
-		if(cases_adjacentes == null && liste_à_ignorer == null){
-			cases_adjacentes = new ArrayList<>();
-			liste_à_ignorer = new ArrayList<>();
-		}
-		int[][] adj = adjacentes(x, y);
-		int[] coordonnees = {x, y};
-		liste_à_ignorer.add(coordonnees);;
-		for(int i = 0; i < adj.length; i++){
-			try{
-				int[] tmp = {adj[i][0], adj[i][1]};
-				if(verifier_si_deja_passe(liste_à_ignorer, tmp))
-					if(plateau[tmp[0]][tmp[1]].piece instanceof Cube){
-						int[] a = {adj[i][0], adj[i][1]};
-						cases_adjacentes.add(a);
-						cases_adjacentes.get(cases_adjacentes.size() - 1);
-						cases_adjacentes_ignorer(adj[i][0], adj[i][1], liste_à_ignorer, cases_adjacentes);
-				}
-			}catch(Exception e){
-			}
-		}
-		int[][] cases_adjacentes_tableau = cases_adjacentes.toArray(new int[0][0]);
-		return cases_adjacentes_tableau;
-	}
 	
 	public boolean verifier_si_deja_passe(ArrayList<int[]> liste_à_ignorer, int[] tmp){
 		for(int i = 0; i < liste_à_ignorer.size(); i++){
-			if(liste_à_ignorer.get(i) == tmp){
+			int[] coordonnes = liste_à_ignorer.get(i);
+			if(coordonnes[0] == tmp[0] && coordonnes[1] == tmp[1]){
 				return false;
 			}
 		}
@@ -242,7 +255,7 @@ public class Grille {
 	}
 
 	public void supprimeCube(int x,int y){
-	//Cette fonction permet de supprimer des cubes et fait descendre ceux qui sont au dessus.
+	//Cette fonction permet de supprimer des cubes
 		if(!horsLimite(x,y) && plateau[x][y].getValeur()!=null && plateau[x][y].getValeur()!="animal" && peutSupprimer(x,y)){
 			plateau[x][y]=null;
 
@@ -270,24 +283,42 @@ public class Grille {
 	}
 
 	public void supprime(int x, int y){
-		plateau[x][y]=null;
+		int[][] adjacents = (cases_adjacentes_ignorer(x, y, null, null));
+		plateau[x][y].estVide = true;
+		for(int i = 0; i < adjacents.length; i++){
+			plateau[adjacents[i][0]][adjacents[i][1]].estVide = true;;
+		}
+		construction_etat();
+	}
+
+	public int nombre_piece_colonne_au_dessus(int x, int y){
+		int nbColonnes = 0;
+		for(int i = 0; i < y; i++){
+			if(!plateau[x][i].estVide){
+				nbColonnes++;
+			}
+		}
+		return nbColonnes;
 	}
 
 	public void gravite(){
-		for(int i = 0; i < plateau.length; i++){
-			for(int j = 0; j < plateau[i].length; j++){
-				if(plateau[i][j].piece == null){
-					for(int k = i - 1; k > -1; k--){
-						System.out.print(
-							"plateau[k][j].piece = " + plateau[k][j].piece + "\nplateau[k+1][j].piece = " + plateau[k+1][j].piece + "\n");
-						plateau[k+1][j].piece = plateau[k][j].piece;
-						plateau[k][j].piece = null;
+		for(int i = largeur - 1; i > 0; i--){
+			for(int j = hauteur - 1 ; j > 0; j--){
+				int nb = nombre_piece_colonne_au_dessus(i, j);
+				if(plateau[i][j].estVide && nb > 0){
+					for(int k = i; k >= 0; k--){
+						if(!plateau[k][j].estVide){
+							Case tmp = plateau[i][j];
+							plateau[i][j] = plateau[k][j];
+							plateau[k][j] = tmp;
+						}
+						//plateau[k][j].estVide = true;
 					}
 				}
 			}
 		}
 	}
-	
+
 	/*public void remplitGrille(){
 	//Avec cette fonction on remplit la grille avec des cubes de couleurs aléatoires.
 		Random r=new Random();
@@ -332,16 +363,20 @@ public class Grille {
 		for(int i = 0; i < hauteur; i++){ // ligne
 			System.out.print(i + " | ");
 			for(int j = 0; j < largeur; j++){ // collone
-				if(plateau[i][j].piece == null)
-				{
-					System.out.print(" ");
-				}
-				if(plateau[i][j].piece instanceof Animal){ //TODO: différencier les animaux 
+				try{
+					if(!plateau[i][j].estVide){
+						if(plateau[i][j].piece instanceof Animal){ //TODO: différencier les animaux 
 
-					System.out.print("A");
-				}
-				if(plateau[i][j].piece instanceof Cube){ //TODO: différencier les cubes par couleur
-					System.out.print(plateau[i][j].piece.nom.charAt(0));
+							System.out.print("A");
+						}
+						if(plateau[i][j].piece instanceof Cube){ //TODO: différencier les cubes par couleur
+							System.out.print(plateau[i][j].piece.nom.charAt(0));
+						}
+					}
+				}catch(Exception e){
+					if(plateau[i][j].estVide){
+						System.out.print("   ");
+					}
 				}
 				System.out.print(" | ");
 			}

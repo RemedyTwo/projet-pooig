@@ -1,14 +1,12 @@
 public class Case {
 //Ce code gère une case du plateau.
-	boolean estVide,visible;
+	boolean estVide;
+	//boolean visible;
 	Piece piece;
 	
-	public Case(boolean estVide,Piece piece,boolean visible) {
-		this.estVide=estVide;
-		this.visible=visible;
-		if(!estVide && visible) {
-			this.piece=piece;
-		}
+	public Case(Piece piece) {
+		this.piece = piece;
+		estVide = false;
 	}
 	
 	public String getValeur() {

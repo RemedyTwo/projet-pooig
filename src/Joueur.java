@@ -42,7 +42,7 @@ public class Joueur {
 				}
 			}
 			if(grille.peutSupprimer(x,y)){
-				grille.supprimeCube(x,y);
+				grille.supprime(x,y);
 				grille.gravite();
 			}else{
 				System.out.println("Tour invalide");
