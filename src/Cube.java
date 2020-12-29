@@ -1,7 +1,5 @@
 public class Cube extends Piece{
-	
-	public String couleur;
-	
+		
 	public Cube(String couleur) {
 		super(couleur);
 	}
