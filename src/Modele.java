@@ -9,13 +9,13 @@ public class Modele{
 	public Grille grille;
 	
 	public Modele() throws IOException{
-		image.length=grille.length;
-		image[].length=grille[0].length;
-		for(int i=0;i<grille.length;i++){
-			for(int j=0;j<grille.length;j++){
-				if(!grille[i][j].estVide){
+		image = new BufferedImage[grille.largeur][grille.hauteur];
+		for(int i=0;i<grille.plateau.length;i++){
+			for(int j=0;j<grille.plateau[i].length;j++){
+				if(!grille.plateau[i][j].estVide){
 					try {
-						this.image[i][j]=ImageIO.read(new File(grille[i][j].));
+						String nom = grille.plateau[i][j].piece.nom + ".jpg";
+						this.image[i][j]=ImageIO.read(new File(nom));
 					}catch (IOException e) {
 			 			System.err.println("Path not found");
             					e.printStackTrace();

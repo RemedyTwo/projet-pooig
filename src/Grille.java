@@ -1,11 +1,12 @@
 import java.util.ArrayList;
+
+import javax.swing.JMenu;
 public class Grille {
 //Ce code gère la grille du jeu.
 
 	public Case[][]plateau;
 	public int hauteur, largeur, nbAnimaux;
-	//Le tableau cotes nous aidera à éliminer les cubes voisins de même couleur.
-	
+
 	public Grille(int l,int h, int nbAnimaux) {
 		this.hauteur = h;
 		this.largeur = l;
