@@ -25,7 +25,7 @@ public class Grille {
 		}
 	}
 	
-	public boolean peutSupprimer(int x,int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
+	public boolean peutSupprimer(int x,int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
 		int[][] adjacents = adjacentes(x, y);
 		if(adjacents.length > 0){
 			return true;
@@ -33,26 +33,26 @@ public class Grille {
 		return false;
 	}
 
-	public int[][] cases_adjacentes_ignorer(int x, int y, ArrayList<int[]> liste_à_ignorer, ArrayList<int[]> cases_adjacentes){
-		if(cases_adjacentes == null && liste_à_ignorer == null){
-			cases_adjacentes = new ArrayList<>();
-			liste_à_ignorer = new ArrayList<>();
+	public int[][] casesAdjacentesIgnorer(int x, int y, ArrayList<int[]> listeAIgnorer, ArrayList<int[]> casesAdjacentes){
+		if(casesAdjacentes == null && listeAIgnorer == null){
+			casesAdjacentes = new ArrayList<>();
+			listeAIgnorer = new ArrayList<>();
 		}
 		int[][] adj = adjacentes(x, y);
 		int[] coordonnees = {x, y};
 		
-		liste_à_ignorer.add(coordonnees);;
+		listeAIgnorer.add(coordonnees);;
 		for(int i = 0; i < adj.length; i++){
 			int[] tmp = {adj[i][0], adj[i][1]};
-			if(verifier_si_deja_passe(liste_à_ignorer, tmp))
+			if(verifierSiDejaPasse(listeAIgnorer, tmp))
 				if(plateau[tmp[0]][tmp[1]].piece instanceof Cube){
 					int[] a = {adj[i][0], adj[i][1]};
-					cases_adjacentes.add(a);
-					cases_adjacentes_ignorer(adj[i][0], adj[i][1], liste_à_ignorer, cases_adjacentes);
+					casesAdjacentes.add(a);
+					casesAdjacentesIgnorer(adj[i][0], adj[i][1], listeAIgnorer, casesAdjacentes);
 			}
 		}
-		int[][] cases_adjacentes_tableau = cases_adjacentes.toArray(new int[0][0]);
-		return cases_adjacentes_tableau;
+		int[][] casesAdjacentesTableau = casesAdjacentes.toArray(new int[0][0]);
+		return casesAdjacentesTableau;
 	}
 		
 	public int[][] adjacentes(int x, int y){ //retourne un tableau listant les adjacentes des coordonnées d'un point. ce tableau passe par un filtre
@@ -62,26 +62,26 @@ public class Grille {
 			{x, y-1},
 			{x-1, y}
 		};
-		return filtre_adjacentes_coordonnees(adjacentes, x, y);
+		return filtreAdjacentesCoordonnees(adjacentes, x, y);
 	}
 
-	public int[][] filtre_adjacentes_coordonnees(int[][] adjacentes, int x, int y){ //retourne le tableau d'adjacentes avec les coordonnées qui dépassent la taille du tableau retirés, ce tableau passe un dernier filtre
+	public int[][] filtreAdjacentesCoordonnees(int[][] adjacentes, int x, int y){ //retourne le tableau d'adjacentes avec les coordonnées qui dépassent la taille du tableau retirés, ce tableau passe un dernier filtre
 		ArrayList<Integer> filtre = new ArrayList<>();
 		for(int i = 0; i < adjacentes.length; i++){
 				if(adjacentes[i][0] < largeur && adjacentes[i][1] < hauteur){
 					filtre.add(i);
 				}
 		}
-		int[][] adjacentes_filtres = new int[filtre.size()][2];
+		int[][] adjacentesFiltres = new int[filtre.size()][2];
 		for(int i = 0; i < filtre.size(); i++){
 			for(int j = 0; j < 2; j++){
-				adjacentes_filtres[i][j] = adjacentes[filtre.get(i)][j];
+				adjacentesFiltres[i][j] = adjacentes[filtre.get(i)][j];
 			}
 		}
-		return filtre_adjacentes_couleur(adjacentes_filtres, x, y);
+		return filtreAdjacentesCouleur(adjacentesFiltres, x, y);
 	}
 
-	public int[][] filtre_adjacentes_couleur(int[][] adjacentes, int x, int y){ //retourne le tableau d'adjancentes filtré avec les coordoonées des pièce d'une différente couleur retirés
+	public int[][] filtreAdjacentesCouleur(int[][] adjacentes, int x, int y){ //retourne le tableau d'adjancentes filtré avec les coordoonées des pièces d'une différente couleur retirées
 		ArrayList<Integer> filtre = new ArrayList<>();
 		for(int i = 0; i < adjacentes.length; i++){
 			try{
@@ -90,18 +90,18 @@ public class Grille {
 				}
 			}catch(Exception e){}
 		}
-		int[][] adjacentes_filtres = new int[filtre.size()][2];
+		int[][] adjacentesFiltres = new int[filtre.size()][2];
 		for(int i = 0; i < filtre.size(); i++){
 			for(int j = 0; j < 2; j++){
-				adjacentes_filtres[i][j] = adjacentes[filtre.get(i)][j];
+				adjacentesFiltres[i][j] = adjacentes[filtre.get(i)][j];
 			}
 		}
-		return adjacentes_filtres;
+		return adjacentesFiltres;
 	}
 	
-	public boolean verifier_si_deja_passe(ArrayList<int[]> liste_à_ignorer, int[] tmp){
-		for(int i = 0; i < liste_à_ignorer.size(); i++){
-			int[] coordonnes = liste_à_ignorer.get(i);
+	public boolean verifierSiDejaPasse(ArrayList<int[]> listeAIgnorer, int[] tmp){
+		for(int i = 0; i < listeAIgnorer.size(); i++){
+			int[] coordonnes = listeAIgnorer.get(i);
 			if(coordonnes[0] == tmp[0] && coordonnes[1] == tmp[1]){
 				return false;
 			}
@@ -110,14 +110,14 @@ public class Grille {
 	}
 
 	public void supprime(int x, int y){ //supprime un point et ses adjacents de la même couleur
-		int[][] adjacents = (cases_adjacentes_ignorer(x, y, null, null));
+		int[][] adjacents = (casesAdjacentesIgnorer(x, y, null, null));
 		plateau[x][y].estVide = true;
 		for(int i = 0; i < adjacents.length; i++){
 			plateau[adjacents[i][0]][adjacents[i][1]].estVide = true;;
 		}
 	}
 
-	public int nombre_piece_colonne_au_dessus(int x, int y){ //compte le nombre de piece dans une colonne 
+	public int nombrePieceColonneAuDessus(int x, int y){ //compte le nombre de pièces dans une colonne 
 		int nbColonnes = 0;
 		for(int i = 0; i < x; i++){
 			if(!plateau[i][y].estVide){
@@ -127,10 +127,10 @@ public class Grille {
 		return nbColonnes;
 	}
 
-	public void gravite(){ //applique la gravite
+	public void gravite(){ //applique la gravité
 		for(int i = largeur - 1; i > 0; i--){
 			for(int j = hauteur - 1 ; j >= 0; j--){
-				int nb = nombre_piece_colonne_au_dessus(i, j);
+				int nb = nombrePieceColonneAuDessus(i, j);
 				if(plateau[i][j].estVide && nb > 0){
 					for(int k = i; k >= 0; k--){
 						if(!plateau[k][j].estVide){
@@ -153,7 +153,7 @@ public class Grille {
 		System.out.println("");
 		for(int i = 0; i < hauteur; i++){ // ligne
 			System.out.print(i + " | ");
-			for(int j = 0; j < largeur; j++){ // collone
+			for(int j = 0; j < largeur; j++){ // colonne
 				if(!plateau[i][j].estVide){
 					if(plateau[i][j].piece instanceof Animal){ 
 

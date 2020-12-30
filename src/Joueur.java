@@ -11,7 +11,6 @@ public class Joueur {
 		this.fini = false;
 		this.grille = g;
 		this.score = 0;
-		this.nbVies = 3;
 		this.robot = robot;
 	}
 	
@@ -30,15 +29,35 @@ public class Joueur {
 	public void tour(){
 	//On joue un tour en entrant 2 entiers correspondant aux coordonnées d'un cube. si le cube sélectionné ne peut pas être supprimé, on relance le tour. A la fin du tour on vérifie si le jeu n'est pas fini et, dans le cas où il ne l'est pas, on joue le tour suivant.
 		while(!fini){
-			Scanner scanner = new Scanner(System.in); 
-			grille.affichage();
-			System.out.print("colonne :");
-			int x=scanner.nextInt();
-			System.out.println("");
-			System.out.print("ligne :");
-			int y=scanner.nextInt();
-			//scanner.close();
+			int max=0;
+			int x=0;
+			int y=0;
+			if(robot) {
+				for(int i=0;i<grille.plateau.length;i++) {
+					for(int j=0;j<grille.plateau.length;j++) {
+						if(grille.adjacentes(i, j).length>max) {
+							max=grille.adjacentes(i,j).length;
+						}
+					}
+				}
+				while(x<grille.plateau.length && grille.adjacentes(x, y).length<max) {
+					while(y<grille.plateau.length && grille.adjacentes(x, y).length<max) {
+						y++;
+					}
+					x++;
+				}
+			}else{
+				Scanner scanner = new Scanner(System.in); 
+				grille.affichage();
+				System.out.print("colonne :");
+				x=scanner.nextInt();
+				System.out.println("");
+				System.out.print("ligne :");
+				y=scanner.nextInt();
+				//scanner.close();
+			}
 			if(grille.peutSupprimer(x,y)){
+				nbTours--;
 				grille.supprime(x,y);
 				grille.gravite();
 			}else{
