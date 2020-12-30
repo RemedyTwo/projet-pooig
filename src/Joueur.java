@@ -2,16 +2,17 @@ import java.util.Scanner;
 public class Joueur {
 //Ce code prend les commandes du joueur et les éxecute.
 
-	public int nbTours,score;
-	boolean fini,robot;
+	public int nbTours, nbVies, score;
+	public boolean fini, robot;
 	public Grille grille;
 	
-	public Joueur(int nbTours,Grille g,boolean robot){
-		this.nbTours=nbTours;
-		this.fini=false;
-		this.grille=g;
-		this.score=0;
-		this.robot=robot;
+	public Joueur(int nbTours, Grille g, boolean robot){
+		this.nbTours = nbTours;
+		this.fini = false;
+		this.grille = g;
+		this.score = 0;
+		this.nbVies = 3;
+		this.robot = robot;
 	}
 	
 	public void finDuJeu(){
@@ -22,6 +23,7 @@ public class Joueur {
 		}else if(grille.nbAnimaux==0){
 			System.out.println("Vous avez gagné!");
 			fini=true;
+			grille.affichage();
 		}
 	}
 
@@ -30,58 +32,32 @@ public class Joueur {
 		while(!fini){
 			Scanner scanner = new Scanner(System.in); 
 			grille.affichage();
-			int x=0;
-			int y=0;
-			if(robot){
-			//Si le joueur est un robot, il prend la case avec le plus grand nombre de cubes qu'il peut supprimer.
-				int max=0;
-				for(int i=0;i<grille.length;i++){
-					for(int j=0;j<grille[i].length;j++){
-						if(max<grille.adjacences(i,j)){
-							max=grille.adjacences(i,j);
-						}
-					}
-				}
-				while(grille.adjacences(x,y)<max && x<grille.length){
-					while(grille.adjacences(x,y)<max && y<grille[x].length){
-						y++;
-					}
-					x++;
-				}
-			}else{	
-				System.out.print("colonne :");
-				x=scanner.nextInt();
-				System.out.println("\n");
-				System.out.print("ligne :");
-				y=scanner.nextInt();
-			}
+			System.out.print("colonne :");
+			int x=scanner.nextInt();
+			System.out.println("");
+			System.out.print("ligne :");
+			int y=scanner.nextInt();
+			//scanner.close();
 			if(grille.peutSupprimer(x,y)){
-				int adj=grille.adjacences(x,y);
-				score+=adj*100;
-				if(adj>3 && adj<9){
-					score+=250;
-				}else if(adj>9){
-					score+=500;
-				}
-				grille.supprimeCube(x,y);
+				grille.supprime(x,y);
 				grille.gravite();
-				nbTours--;
 			}else{
 				System.out.println("Tour invalide");
 			}
+			grille.AnimalAuSol();
 			finDuJeu();
 			tour();
 		}
 	}
-	
+
 	public void lanceJeu(){
 		if(!robot){
 			Scanner scanner = new Scanner(System.in); 
 			System.out.println("Voulez-vous jouer? (Y/N)");
 			String s=scanner.nextLine();
-			if(s.equals"Y"){
+			if(s.equals("Y")){
 				tour();
-			}if(s.equals "N"){
+			}if(s.equals ("N")){
 				System.out.println("D'accord, au revoir.");
 			}else{
 				System.out.println("Commande invalide");
