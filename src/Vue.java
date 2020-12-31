@@ -50,24 +50,64 @@ public class Vue{
 		frame.setPreferredSize(new Dimension(800, 600));
 		frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
 		frame.pack();
+		frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 	}
 
 	private void Jeu(){
-		frame.setVisible(false);
+		Case[][] plateau = {
+            { new Case(new Animal()), new Case(new Animal()), new Case(new Animal()) },
+            { new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Vert())  },
+            { new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Vert())  },
+            };
+        Grille g = new Grille(plateau.length, plateau[0].length, 3);
+        g.plateau = plateau;
+		displayGrid(g);
+	}
 
-		JFrame game_frame = new JFrame();
-		JButton[][] game_buttons = new JButton[grille.largeur][grille.hauteur];
+	public void displayGrid(Grille g){
+		
+		JFrame grid_frame = new JFrame();
+		JPanel grid_buttonlist = new JPanel();
+		JButton[][] button_grid = new JButton[g.largeur][g.hauteur];
+		JButton grid_return = new JButton("Retour");
 
-		/*JMenuBar jmb = new JMenuBar();
-		game_frame.setJMenuBar(jmb);
-		jmb.add(joueur.score);*/
+		GridLayout grid_layout = new GridLayout(g.hauteur + 1, g.largeur + 1);
+		grid_buttonlist.setLayout(grid_layout);
 
-		game_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setTitle("Pet Rescue Saga");
-		frame.setPreferredSize(new Dimension(800, 600));
-		game_frame.pack();
-		game_frame.setVisible(true);
+		for(int i = 0; i < g.largeur; i++){
+			for(int j = 0; j < g.hauteur; j++){
+				if(!g.plateau[i][j].estVide){
+					JButton piece = new JButton(String.valueOf(g.plateau[i][j].piece.nom.charAt(0)));
+					piece.setSize(new Dimension(10, 10));
+					if(g.plateau[i][j].piece.nom == "rouge"){
+						piece.setBackground(Color.RED);
+					}else if(g.plateau[i][j].piece.nom == "vert"){
+						piece.setBackground(Color.GREEN);
+					}else if(g.plateau[i][j].piece.nom == "bleu"){
+						piece.setBackground(Color.BLUE);
+					}
+					button_grid[i][j] = piece;
+					grid_buttonlist.add(button_grid[i][j]);
+				}
+			}
+		}
+
+		grid_buttonlist.add(grid_return);
+
+		grid_return.addActionListener((event) ->{
+			frame.setVisible(true);
+			grid_frame.dispose();
+		});
+
+		grid_frame.add(grid_buttonlist);
+
+		grid_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.setSize(new Dimension(800, 600));
+		grid_frame.pack();
+		grid_frame.setLocationRelativeTo(null);
+		grid_frame.setVisible(true);
+	
 	}
 
 	private void rules() {
@@ -95,6 +135,7 @@ public class Vue{
 		frame.setTitle("Pet Rescue Saga");
 		frame.setPreferredSize(new Dimension(800, 600));
 		rules_frame.pack();
+		rules_frame.setLocationRelativeTo(null);
 		rules_frame.setVisible(true);
 	}
 	
@@ -156,6 +197,7 @@ public class Vue{
 		frame.setTitle("Pet Rescue Saga");
 		frame.setPreferredSize(new Dimension(800, 600));
 		level_frame.pack();
+		level_frame.setLocationRelativeTo(null);
 		level_frame.setVisible(true);
 	}
 	
@@ -184,6 +226,7 @@ public class Vue{
 		frame.setTitle("Pet Rescue Saga");
 		frame.setPreferredSize(new Dimension(800, 600));
 		credits_frame.pack();
+		credits_frame.setLocationRelativeTo(null);
 		credits_frame.setVisible(true);
 	}
 

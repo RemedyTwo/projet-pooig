@@ -1,6 +1,6 @@
 import java.util.ArrayList;
-
 import javax.swing.JMenu;
+
 public class Grille {
 //Ce code gère la grille du jeu.
 
