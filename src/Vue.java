@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Vue{
-	public Grille grille;
+	public Grille grille=new Grille(5,5,5);
 	public Modele modele;
 	public Controleur controleur;
 		
@@ -11,7 +11,7 @@ public class Vue{
 		JLabel label = new JLabel("bruh");
 		JPanel panneau = new JPanel();
 			JButton launch = new JButton("Lancer le jeu");
-			JButton level_select = new JButton("Choix du niveau");
+			JButton level_select = new JButton("Modifier la difficulté");
 			JButton rules = new JButton("Règles");
 			JButton credits = new JButton("Crédits");
 	
@@ -55,17 +55,19 @@ public class Vue{
 	}
 
 	private void Jeu(){
-		Case[][] plateau = {
-            { new Case(new Animal()), new Case(new Animal()), new Case(new Animal()) },
-            { new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Vert())  },
-            { new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Vert())  },
-            };
-        Grille g = new Grille(plateau.length, plateau[0].length, 3);
+		Case[][] plateau= new Case[grille.largeur][grille.hauteur];
+		for(int i=0;i<plateau.length;i++) {
+			for(int j=0;j<plateau[0].length;j++) {
+				plateau[i][j] = new Case(new Animal());
+			}
+		}
+        Grille g = this.grille;
         g.plateau = plateau;
 		displayGrid(g);
 	}
 
 	public void displayGrid(Grille g){
+		frame.setVisible(false);
 		
 		JFrame grid_frame = new JFrame();
 		JPanel grid_buttonlist = new JPanel();
@@ -114,7 +116,7 @@ public class Vue{
 		frame.setVisible(false);
 
 		JFrame rules_frame = new JFrame();
-		JLabel rules_text = new JLabel("Le but est simple : il s'agit de libérer les animaux bloquès en haut des boites en détruisant celles-ci. Les boîtes destructibles sont celles qui ont une boîte de même couleur en adjacence. BLABLABLA");
+		JLabel rules_text = new JLabel("Le but est simple : il s'agit de libérer les animaux bloqués en haut des boites en détruisant celles-ci. Les boîtes destructibles sont celles qui ont au moins une boîte de même couleur en adjacence. Faite descendre tous les animaux en bas de l'écran et vous gagnez!");
 		JPanel rules_panel = new JPanel();
 		JButton rules_return = new JButton("Retour");
 
@@ -132,8 +134,7 @@ public class Vue{
 		rules_frame.add(rules_text);
 
 		rules_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setTitle("Pet Rescue Saga");
-		frame.setPreferredSize(new Dimension(800, 600));
+		rules_frame.setTitle("Pet Rescue Saga");
 		rules_frame.pack();
 		rules_frame.setLocationRelativeTo(null);
 		rules_frame.setVisible(true);
@@ -168,34 +169,34 @@ public class Vue{
 		});
 	
 		niveau1.addActionListener((event)->{
-			this.grille=new Grille(5,5,5);
-			modele.grille=grille;
+			Grille grille=new Grille(5,5,5);
+			this.grille=grille;
 			frame.setVisible(true);
 			level_frame.dispose();
 		});
 			
 		niveau2.addActionListener((event)->{
-			this.grille=new Grille(10,10,10);
-			modele.grille=grille;
+			Grille grille=new Grille(10,10,10);
+			this.grille=grille;
 			frame.setVisible(true);
 			level_frame.dispose();
 		});
 			
 		niveau3.addActionListener((event)->{
-			this.grille=new Grille(15,15,15);
-			modele.grille=grille;
+			Grille grille=new Grille(15,15,15);
+			this.grille=grille;
 			frame.setVisible(true);
 			level_frame.dispose();
 		});
 			
-		level_frame.add(level_panel, BorderLayout.NORTH);
-		level_frame.add(level_text);
+		level_frame.add(level_panel, BorderLayout.CENTER);
+		level_frame.add(level_text, BorderLayout.NORTH);
 		level_frame.add(level_panel2, BorderLayout.SOUTH);
 		
 		
 		level_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setTitle("Pet Rescue Saga");
-		frame.setPreferredSize(new Dimension(800, 600));
+		level_frame.setTitle("Pet Rescue Saga");
+		level_frame.setPreferredSize(new Dimension(800, 600));
 		level_frame.pack();
 		level_frame.setLocationRelativeTo(null);
 		level_frame.setVisible(true);
@@ -223,8 +224,7 @@ public class Vue{
 		credits_frame.add(credits_text);
 
 		credits_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setTitle("Pet Rescue Saga");
-		frame.setPreferredSize(new Dimension(800, 600));
+		credits_frame.setTitle("Pet Rescue Saga");
 		credits_frame.pack();
 		credits_frame.setLocationRelativeTo(null);
 		credits_frame.setVisible(true);

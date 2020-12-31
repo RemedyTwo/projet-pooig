@@ -1,9 +1,8 @@
 import java.util.Scanner;
-
 public class Joueur {
 //Ce code prend les commandes du joueur et les éxecute.
 
-	public int nbTours, nbVies, score;
+	public int nbTours, score;
 	public boolean fini, robot;
 	public Grille grille;
 	
@@ -36,17 +35,18 @@ public class Joueur {
 			if(robot) {
 				for(int i=0;i<grille.plateau.length;i++) {
 					for(int j=0;j<grille.plateau.length;j++) {
-						if(grille.adjacentes(i, j).length>max) {
-							max=grille.adjacentes(i,j).length;
+						if(grille.casesAdjacentesIgnorer(i, j, null, null).length>max) {
+							max=grille.casesAdjacentesIgnorer(i, j, null, null).length;
 						}
 					}
 				}
-				while(x<grille.plateau.length && grille.adjacentes(x, y).length<max) {
-					while(y<grille.plateau.length && grille.adjacentes(x, y).length<max) {
+				while(x<grille.plateau.length && grille.casesAdjacentesIgnorer(x, y,null,null).length<max) {
+					while(y<grille.plateau.length && grille.casesAdjacentesIgnorer(x, y,null,null).length<max) {
 						y++;
 					}
 					x++;
 				}
+				grille.supprime(x,y);
 			}else{
 				Scanner scanner = new Scanner(System.in); 
 				grille.affichage();
@@ -60,10 +60,9 @@ public class Joueur {
 			if(grille.peutSupprimer(x,y)){
 				nbTours--;
 				grille.supprime(x,y);
-				grille.gravite();
-			}else{
-				System.out.println("Tour invalide");
+				
 			}
+			grille.gravite();
 			grille.AnimalAuSol();
 			finDuJeu();
 			tour();
