@@ -19,6 +19,7 @@ public class Main {
         + "3/ Quitter\n"
         + "\n\nVotre choix : "
         );
+        
         Scanner scanner = new Scanner(System.in);
 
         int choix = scanner.nextInt();
@@ -28,9 +29,8 @@ public class Main {
         }
 
         if(choix == 2){
-            //TODO:à remplir
         	JPanel level_panel=new JPanel();
-    		level_panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
+        	    			level_panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
     		GridLayout level_layout = new GridLayout(0, 1);
     		level_layout.setVgap(30);
     		level_panel.setLayout(level_layout);
@@ -47,23 +47,77 @@ public class Main {
     	
     		niveau1.addActionListener((event)->{
     			Grille g=new Grille(5,5,5);
-    			Vue v=new Vue();
-    			v.grille=g;
+    			for(int x=0;x<g.plateau.length;x++) {
+    				for(int y=0;y<g.plateau[x].length;y++) {
+    					g.plateau[x][y]=new Case(new Animal());
+    				}
+    			}
+    			Joueur j=new Joueur(20,0,g,false); 
     			level_frame.dispose();
+    			System.out.print("Préférez-vous afficher le jeu via le terminal ou par une interface graphique ?\n\n"
+    			+"1/ terminal\n"
+    			+"2/ interface graphique\n"
+    			+"\n\n Votre choix : ");
+    				int choix2=scanner.nextInt();
+    				if(choix2==1) {
+    					j.tour();
+    					
+    				}if(choix2==2){
+    					Vue v=new Vue();
+    					v.grille=g;
+    				}else {
+    					System.out.println("commande invalide");
+    				}
     		});
     			
     		niveau2.addActionListener((event)->{
     			Grille g=new Grille(10,10,10);
-    			Vue v=new Vue();
-    			v.grille=g;
+    			for(int x=0;x<g.plateau.length;x++) {
+    				for(int y=0;y<g.plateau[x].length;y++) {
+    					g.plateau[x][y]=new Case(new Animal());
+    				}
+    			}
+    			Joueur j=new Joueur(20,0,g,false);
     			level_frame.dispose();
+    			System.out.print("Préférez-vous afficher le jeu via le terminal ou par une interface graphique ?\n\n"
+    			+"1/ terminal\n"
+    			+"2/ interface graphique\n"
+    			+"\n\n Votre choix : ");
+    				int choix2=scanner.nextInt();
+    				if(choix2==1) {
+    					j.tour();
+    					level_frame.dispose();
+    				}if(choix2==2){
+    					Vue v=new Vue();
+    					v.grille=g;
+    				}else {
+    					System.out.println("commande invalide");
+    				}
     		});
     			
     		niveau3.addActionListener((event)->{
     			Grille g=new Grille(15,15,15);
-    			Vue v=new Vue();
-    			v.grille=g;
+    			for(int x=0;x<g.plateau.length;x++) {
+    				for(int y=0;y<g.plateau[x].length;y++) {
+    					g.plateau[x][y]=new Case(new Animal());
+    				}
+    			}
+    			Joueur j=new Joueur(20,0,g,false);
     			level_frame.dispose();
+    			System.out.print("Préférez-vous afficher le jeu via le terminal ou par une interface graphique ?\n\n"
+    			+"1/ terminal\n"
+    			+"2/ interface graphique\n"
+    			+"\n\n Votre choix : ");
+    				int choix2=scanner.nextInt();
+    				if(choix2==1) {
+    					j.tour();
+    					level_frame.dispose();
+    				}if(choix2==2){
+    					Vue v=new Vue();
+    					v.grille=g;
+    				}else {
+    					System.out.println("commande invalide");
+    				}
     		});
     			
     		level_frame.add(level_panel, BorderLayout.CENTER);
