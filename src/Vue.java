@@ -3,12 +3,13 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Vue{
+//gère l'affichage de l'interface graphique du jeu
 	public Grille grille;
 	public Modele modele;
 	public Controleur controleur;
 		
 	JFrame frame = new JFrame();
-		JLabel label = new JLabel("bruh");
+		//JLabel label = new JLabel("bruh");
 		JPanel panneau = new JPanel();
 			JButton launch = new JButton("Lancer le jeu");
 			JButton level_select = new JButton("Modifier la difficulté");
@@ -126,6 +127,8 @@ public class Vue{
 						piece.setBackground(Color.BLUE);
 					}else if(g.plateau[i][j].piece.nom == "jaune"){
 						piece.setBackground(Color.YELLOW);
+					}else if(g.plateau[i][j] instanceof Obstacle){
+						piece.setBackground(Color.BLACK);
 					}
 					button_grid[i][j] = piece;
 					grid_buttonlist.add(button_grid[i][j]);
@@ -261,11 +264,11 @@ public class Vue{
 		credits_frame.setVisible(true);
 	}
 
-	public void mouseClicked(MouseEvent event) {
+	/*public void mouseClicked(MouseEvent event) {
 	//avec cette fonction on veut essaier de supprimer le cube sur lequel le joueur a cliqué.
 		int x=event.getPoint().x;
 		int y=event.getPoint().y;
-	}
+	}*/
 
 	public static void main(String[] args){
 		new Vue();

@@ -26,7 +26,7 @@ public class Grille {
 	
 	public boolean peutSupprimer(int x,int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
 		int[][] adjacents = adjacentes(x, y);
-		if(adjacents.length > 0){
+		if(adjacents.length > 0 && !(plateau[x][y].piece instanceof Animal) && !(plateau[x][y].piece instanceof Obstacle)){
 			return true;
 		}
 		return false;
@@ -98,7 +98,7 @@ public class Grille {
 		return adjacentesFiltres;
 	}
 	
-	public boolean verifierSiDejaPasse(ArrayList<int[]> listeAIgnorer, int[] tmp){
+	public boolean verifierSiDejaPasse(ArrayList<int[]> listeAIgnorer, int[] tmp){//Vérifie si une case a été analysée précédemment.
 		for(int i = 0; i < listeAIgnorer.size(); i++){
 			int[] coordonnes = listeAIgnorer.get(i);
 			if(coordonnes[0] == tmp[0] && coordonnes[1] == tmp[1]){
@@ -130,7 +130,7 @@ public class Grille {
 		for(int i = largeur - 1; i > 0; i--){
 			for(int j = hauteur - 1 ; j >= 0; j--){
 				int nb = nombrePieceColonneAuDessus(i, j);
-				if(plateau[i][j].estVide && nb > 0){
+				if(plateau[i][j].estVide && nb > 0 && !(plateau[i][j].piece instanceof Obstacle)){
 					while(!plateau[0][j].estVide){
 						for(int k = i; k >= 0; k--){
 								Case tmp = plateau[i][j];
@@ -155,7 +155,7 @@ public class Grille {
 	public void graviteHorizontale(){
 		for(int i = 0; i < largeur; i++){
 			if(plateau[i][0].estVide){
-				while(plateau[i][0].estVide){
+				while(plateau[i][0].estVide && plateau[i][0].piece.nom!="obstacle"){
 					for(int j = 0; j < hauteur - 1; j++){
 						Case tmp = plateau[i][j];
 						plateau[i][j] = plateau[i][j+1];
@@ -177,12 +177,14 @@ public class Grille {
 			System.out.print(i + 1 + " | ");
 			for(int j = 0; j < hauteur; j++){ // colonne
 				if(!plateau[i][j].estVide){
-					if(plateau[i][j].piece instanceof Animal){ 
-
+					if(plateau[i][j].piece instanceof Animal){
 						System.out.print("A");
 					}
 					if(plateau[i][j].piece instanceof Cube){
 						System.out.print(plateau[i][j].piece.nom.charAt(0));
+					}
+					if(plateau[i][j].piece instanceof Obstacle){
+						System.out.print("O");
 					}
 				}
 				if(plateau[i][j].estVide){
