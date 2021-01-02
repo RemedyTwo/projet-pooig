@@ -64,6 +64,7 @@ public class Joueur {
 			}
 			grille.gravite();
 			grille.AnimalAuSol();
+			grille.graviteHorizontale();
 			finDuJeu();
 			tour();
 		}

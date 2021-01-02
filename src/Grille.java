@@ -144,6 +144,29 @@ public class Grille {
 		}
 	}
 
+	public boolean colonneVide(int y){
+		for(int i = 0; i < largeur; i++){
+			if(!plateau[i][y].estVide){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void graviteHorizontale(){
+		for(int j = 0; j < hauteur; j++){
+			if(colonneVide(j)){
+				for(int i = 0; i < largeur; i++){
+					for(int k = j; k < hauteur - 1; k++){
+						Case tmp = plateau[i][k];
+						plateau[i][k] = plateau[i][k+1];
+						plateau[i][k+1] = tmp;
+					}
+				}
+			}
+		}
+	}
+
 	public void affichage(){
 	//Cette fonction affiche la grille actuelle.
 		System.out.print("  | ");
