@@ -1,8 +1,6 @@
 import java.io.*;
 import java.awt.image.*;
-import java.awt.*;
 import javax.imageio.*;
-import javax.swing.undo.*;
 
 public class Modele{
 

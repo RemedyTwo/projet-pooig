@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Vue{
-	public Grille grille=new Grille(5,5,5);
+	public Grille grille;
 	public Modele modele;
 	public Controleur controleur;
 		
@@ -55,15 +55,19 @@ public class Vue{
 	}
 
 	private void Jeu(){
-		Case[][] plateau= new Case[grille.largeur][grille.hauteur];
-		for(int i=0;i<plateau.length;i++) {
-			for(int j=0;j<plateau[0].length;j++) {
-				plateau[i][j] = new Case(new Animal());
-			}
-		}
-        Grille g = this.grille;
-        g.plateau = plateau;
-		displayGrid(g);
+		/*Case[][] niveau2 = {
+			{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal())}, //ligne 1
+			{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 2
+			{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 3
+			{new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune())}, //ligne 4
+			{new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Rouge())}, //ligne 5
+			{new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())}, //ligne 6
+			{new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())}, //ligne 7
+			{new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())} //ligne 8
+		};
+        Grille g = new Grille(niveau2.length, niveau2[0].length, 4);
+        g.plateau = niveau2;
+		displayGrid(g);*/
 	}
 
 	public void displayGrid(Grille g){
@@ -74,26 +78,10 @@ public class Vue{
 		JButton[][] button_grid = new JButton[g.largeur][g.hauteur];
 		JButton grid_return = new JButton("Retour");
 
+		makingGrid(grid_frame, grid_buttonlist, button_grid, g);
+
 		GridLayout grid_layout = new GridLayout(g.hauteur + 1, g.largeur + 1);
 		grid_buttonlist.setLayout(grid_layout);
-
-		for(int i = 0; i < g.largeur; i++){
-			for(int j = 0; j < g.hauteur; j++){
-				if(!g.plateau[i][j].estVide){
-					JButton piece = new JButton(String.valueOf(g.plateau[i][j].piece.nom.charAt(0)));
-					piece.setSize(new Dimension(10, 10));
-					if(g.plateau[i][j].piece.nom == "rouge"){
-						piece.setBackground(Color.RED);
-					}else if(g.plateau[i][j].piece.nom == "vert"){
-						piece.setBackground(Color.GREEN);
-					}else if(g.plateau[i][j].piece.nom == "bleu"){
-						piece.setBackground(Color.BLUE);
-					}
-					button_grid[i][j] = piece;
-					grid_buttonlist.add(button_grid[i][j]);
-				}
-			}
-		}
 
 		grid_buttonlist.add(grid_return);
 
@@ -105,11 +93,45 @@ public class Vue{
 		grid_frame.add(grid_buttonlist);
 
 		grid_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setSize(new Dimension(800, 600));
+		grid_frame.setPreferredSize(new Dimension(800, 600));
 		grid_frame.pack();
 		grid_frame.setLocationRelativeTo(null);
 		grid_frame.setVisible(true);
 	
+	}
+
+	public void makingGrid(JFrame grid_frame, JPanel grid_buttonlist, JButton[][] button_grid, Grille g){
+		for(int i = 0; i < g.largeur; i++){
+			for(int j = 0; j < g.hauteur; j++){
+				if(!g.plateau[i][j].estVide){
+					JButton piece = new JButton(String.valueOf(i + "" + j));
+					piece.setName(i + "" + j);
+					piece.setSize(new Dimension(10, 10));
+					piece.addActionListener((event) -> {
+						int x = Integer.parseInt(String.valueOf(piece.getName().charAt(0)));
+						int y = Integer.parseInt(String.valueOf(piece.getName().charAt(1)));
+						g.supprime(x, y);
+						grid_buttonlist.removeAll();
+						makingGrid(grid_frame, grid_buttonlist, button_grid, g);
+						grid_buttonlist.revalidate();
+						grid_buttonlist.repaint();
+						grid_frame.revalidate();
+						grid_frame.repaint();
+					});
+					if(g.plateau[i][j].piece.nom == "rouge"){
+						piece.setBackground(Color.RED);
+					}else if(g.plateau[i][j].piece.nom == "vert"){
+						piece.setBackground(Color.GREEN);
+					}else if(g.plateau[i][j].piece.nom == "bleu"){
+						piece.setBackground(Color.BLUE);
+					}else if(g.plateau[i][j].piece.nom == "jaune"){
+						piece.setBackground(Color.YELLOW);
+					}
+					button_grid[i][j] = piece;
+					grid_buttonlist.add(button_grid[i][j]);
+				}
+			}
+		}
 	}
 
 	private void rules() {
@@ -183,10 +205,19 @@ public class Vue{
 		});
 			
 		niveau3.addActionListener((event)->{
-			Grille grille=new Grille(15,15,15);
-			this.grille=grille;
-			frame.setVisible(true);
-			level_frame.dispose();
+			Case[][] niveau2 = {
+				{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal())}, //ligne 1
+				{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 2
+				{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 3
+				{new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune())}, //ligne 4
+				{new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Rouge())}, //ligne 5
+				{new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())}, //ligne 6
+				{new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())}, //ligne 7
+				{new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())} //ligne 8
+			};
+			Grille g = new Grille(niveau2.length, niveau2[0].length, 4);
+			g.plateau = niveau2;
+			displayGrid(g);
 		});
 			
 		level_frame.add(level_panel, BorderLayout.CENTER);

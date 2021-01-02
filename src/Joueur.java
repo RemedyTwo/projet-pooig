@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Joueur {
@@ -52,22 +51,22 @@ public class Joueur {
 			}else{
 				Scanner scanner = new Scanner(System.in); 
 				grille.affichage();
-				System.out.print("colonne :");
-				x=scanner.nextInt();
-				System.out.println("");
-				System.out.print("ligne :");
-				y=scanner.nextInt();
-				//scanner.close();
+				System.out.print("ligne : ");
+				x = scanner.nextInt() - 1;
+				System.out.print("colonne : ");
+				y = scanner.nextInt() - 1;
+				System.out.print("\n");
 			}
 			if(grille.peutSupprimer(x,y)){
 				nbTours--;
 				grille.supprime(x,y);
-				
+				grille.gravite();
+				grille.AnimalAuSol();
+				grille.graviteHorizontale();
+				grille.AnimalAuSol();
+			}else{
+				System.out.println("Vous ne pouvez pas supprimer ce bloc.\n");
 			}
-			int i = 0;
-			grille.gravite();
-			grille.AnimalAuSol();
-			grille.graviteHorizontale();
 			finDuJeu();
 			tour();
 		}

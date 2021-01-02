@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import javax.swing.JMenu;
 
 public class Grille {
 //Ce code gère la grille du jeu.
@@ -132,11 +131,11 @@ public class Grille {
 			for(int j = hauteur - 1 ; j >= 0; j--){
 				int nb = nombrePieceColonneAuDessus(i, j);
 				if(plateau[i][j].estVide && nb > 0){
-					for(int k = i; k >= 0; k--){
-						if(!plateau[k][j].estVide){
-							Case tmp = plateau[i][j];
-							plateau[i][j] = plateau[k][j];
-							plateau[k][j] = tmp;
+					while(!plateau[0][j].estVide){
+						for(int k = i; k >= 0; k--){
+								Case tmp = plateau[i][j];
+								plateau[i][j] = plateau[k][j];
+								plateau[k][j] = tmp;
 						}
 					}
 				}
@@ -171,11 +170,11 @@ public class Grille {
 	//Cette fonction affiche la grille actuelle.
 		System.out.print("  | ");
 		for(int i = 0; i < hauteur; i++){
-			System.out.print(i + " | ");
+			System.out.print(i + 1 + " | ");
 		}
 		System.out.println("");
 		for(int i = 0; i < largeur; i++){ // ligne
-			System.out.print(i + " | ");
+			System.out.print(i + 1 + " | ");
 			for(int j = 0; j < hauteur; j++){ // colonne
 				if(!plateau[i][j].estVide){
 					if(plateau[i][j].piece instanceof Animal){ 
