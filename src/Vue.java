@@ -141,8 +141,8 @@ public class Vue{
 		frame.setVisible(false);
 
 		JFrame rules_frame = new JFrame();
-		JLabel rules_text = new JLabel("Le but est simple : il s'agit de libérer les animaux bloqués en haut des boites en détruisant celles-ci. Les boîtes destructibles sont celles qui ont au moins une boîte de même couleur en adjacence. Faite descendre tous les animaux en bas de l'écran et vous gagnez!");
-		JPanel rules_panel = new JPanel();
+		JLabel rules_text = new JLabel("Le but est simple : il s'agit de libérer les animaux bloqués en haut des boites en détruisant celles-ci. Les boîtes destructibles sont celles qui ont au moins une boîte de même couleur en adjacence. Faite descendre tous les animaux en bas de l'écran et vous gagnez! Attention: les cases noires ne peuvent pas être supprimées.");
+		JPanel rules_panel = new JPanel(); 
 		JButton rules_return = new JButton("Retour");
 
 		BorderLayout rules_layout = new BorderLayout();
