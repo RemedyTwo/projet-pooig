@@ -1,12 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class Vue{
 //gère l'affichage de l'interface graphique du jeu
 	public Grille grille;
 	public Modele modele;
 	public Controleur controleur;
+	public Niveaux niveau = new Niveaux();
 		
 	JFrame frame = new JFrame();
 		//JLabel label = new JLabel("bruh");
@@ -27,7 +27,6 @@ public class Vue{
 		panneau.add(level_select);
 		panneau.add(rules);
 		panneau.add(credits);
-		panneau.add(label);
 
 		launch.addActionListener((event) -> {
 			Jeu();
@@ -104,20 +103,22 @@ public class Vue{
 	public void makingGrid(JFrame grid_frame, JPanel grid_buttonlist, JButton[][] button_grid, Grille g){
 		for(int i = 0; i < g.largeur; i++){
 			for(int j = 0; j < g.hauteur; j++){
-				if(!g.plateau[i][j].estVide){
-					JButton piece = new JButton(String.valueOf(i + "" + j));
+				//if(!g.plateau[i][j].estVide){
+					JButton piece = new JButton(String.valueOf(i + ", " + j));
 					piece.setName(i + "" + j);
 					piece.setSize(new Dimension(10, 10));
 					piece.addActionListener((event) -> {
 						int x = Integer.parseInt(String.valueOf(piece.getName().charAt(0)));
 						int y = Integer.parseInt(String.valueOf(piece.getName().charAt(1)));
-						g.supprime(x, y);
-						grid_buttonlist.removeAll();
-						makingGrid(grid_frame, grid_buttonlist, button_grid, g);
-						grid_buttonlist.revalidate();
-						grid_buttonlist.repaint();
-						grid_frame.revalidate();
-						grid_frame.repaint();
+						if(g.peutSupprimer(x, y)){
+							g.supprime(x, y);
+							grid_buttonlist.removeAll();
+							makingGrid(grid_frame, grid_buttonlist, button_grid, g);
+							grid_buttonlist.revalidate();
+							grid_buttonlist.repaint();
+							grid_frame.revalidate();
+							grid_frame.repaint();
+						}
 					});
 					if(g.plateau[i][j].piece.nom == "rouge"){
 						piece.setBackground(Color.RED);
@@ -127,12 +128,14 @@ public class Vue{
 						piece.setBackground(Color.BLUE);
 					}else if(g.plateau[i][j].piece.nom == "jaune"){
 						piece.setBackground(Color.YELLOW);
-					}else if(g.plateau[i][j] instanceof Obstacle){
+					}else if(g.plateau[i][j].piece instanceof Obstacle){
 						piece.setBackground(Color.BLACK);
+					}else if(g.plateau[i][j].estVide){
+						piece.setBackground(Color.gray);
 					}
 					button_grid[i][j] = piece;
 					grid_buttonlist.add(button_grid[i][j]);
-				}
+				//}
 			}
 		}
 	}
@@ -208,18 +211,8 @@ public class Vue{
 		});
 			
 		niveau3.addActionListener((event)->{
-			Case[][] niveau2 = {
-				{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal())}, //ligne 1
-				{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 2
-				{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 3
-				{new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune())}, //ligne 4
-				{new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Rouge())}, //ligne 5
-				{new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())}, //ligne 6
-				{new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())}, //ligne 7
-				{new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())} //ligne 8
-			};
-			Grille g = new Grille(niveau2.length, niveau2[0].length, 4);
-			g.plateau = niveau2;
+			Grille g = new Grille(niveau.niveau2.length, niveau.niveau2[0].length, 4);
+			g.plateau = niveau.niveau2;
 			displayGrid(g);
 		});
 			
