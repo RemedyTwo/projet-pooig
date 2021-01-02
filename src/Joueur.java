@@ -1,4 +1,6 @@
+import java.util.Arrays;
 import java.util.Scanner;
+
 public class Joueur {
 //Ce code prend les commandes du joueur et les éxecute.
 
@@ -62,6 +64,7 @@ public class Joueur {
 				grille.supprime(x,y);
 				
 			}
+			int i = 0;
 			grille.gravite();
 			grille.AnimalAuSol();
 			grille.graviteHorizontale();

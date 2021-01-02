@@ -1,7 +1,6 @@
 import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class Main {
     public static void main(String[] args)
@@ -52,7 +51,7 @@ public class Main {
     					g.plateau[x][y]=new Case(new Animal());
     				}
     			}
-    			Joueur j=new Joueur(20,0,g,false); 
+    			Joueur j=new Joueur(20,g,false); 
     			level_frame.dispose();
     			System.out.print("Préférez-vous afficher le jeu via le terminal ou par une interface graphique ?\n\n"
     			+"1/ terminal\n"
@@ -77,7 +76,7 @@ public class Main {
     					g.plateau[x][y]=new Case(new Animal());
     				}
     			}
-    			Joueur j=new Joueur(20,0,g,false);
+    			Joueur j=new Joueur(20,g,false);
     			level_frame.dispose();
     			System.out.print("Préférez-vous afficher le jeu via le terminal ou par une interface graphique ?\n\n"
     			+"1/ terminal\n"
@@ -102,7 +101,7 @@ public class Main {
     					g.plateau[x][y]=new Case(new Animal());
     				}
     			}
-    			Joueur j=new Joueur(20,0,g,false);
+    			Joueur j=new Joueur(20,g,false);
     			level_frame.dispose();
     			System.out.print("Préférez-vous afficher le jeu via le terminal ou par une interface graphique ?\n\n"
     			+"1/ terminal\n"

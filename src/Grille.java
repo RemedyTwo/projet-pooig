@@ -8,8 +8,8 @@ public class Grille {
 	public int hauteur, largeur, nbAnimaux;
 
 	public Grille(int l,int h, int nbAnimaux) {
-		this.hauteur = h;
 		this.largeur = l;
+		this.hauteur = h;
 		this.plateau = new Case[l][h];
 		this.nbAnimaux = nbAnimaux;
 	}
@@ -154,13 +154,13 @@ public class Grille {
 	}
 
 	public void graviteHorizontale(){
-		for(int j = 0; j < hauteur; j++){
-			if(colonneVide(j)){
-				for(int i = 0; i < largeur; i++){
-					for(int k = j; k < hauteur - 1; k++){
-						Case tmp = plateau[i][k];
-						plateau[i][k] = plateau[i][k+1];
-						plateau[i][k+1] = tmp;
+		for(int i = 0; i < largeur; i++){
+			if(plateau[i][0].estVide){
+				while(plateau[i][0].estVide){
+					for(int j = 0; j < hauteur - 1; j++){
+						Case tmp = plateau[i][j];
+						plateau[i][j] = plateau[i][j+1];
+						plateau[i][j+1] = tmp;
 					}
 				}
 			}
@@ -170,13 +170,13 @@ public class Grille {
 	public void affichage(){
 	//Cette fonction affiche la grille actuelle.
 		System.out.print("  | ");
-		for(int i = 0; i < largeur; i++){
+		for(int i = 0; i < hauteur; i++){
 			System.out.print(i + " | ");
 		}
 		System.out.println("");
-		for(int i = 0; i < hauteur; i++){ // ligne
+		for(int i = 0; i < largeur; i++){ // ligne
 			System.out.print(i + " | ");
-			for(int j = 0; j < largeur; j++){ // colonne
+			for(int j = 0; j < hauteur; j++){ // colonne
 				if(!plateau[i][j].estVide){
 					if(plateau[i][j].piece instanceof Animal){ 
 
