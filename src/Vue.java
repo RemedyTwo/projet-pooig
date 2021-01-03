@@ -78,9 +78,13 @@ public class Vue{
 		JButton[][] button_grid = new JButton[g.largeur][g.hauteur];
 		JButton grid_return = new JButton("Retour");
 
-		makingGrid(grid_frame, grid_buttonlist, button_grid, g);
+		int largeur = g.largeur;
+		int hauteur = g.hauteur;
+		
+		GridLayout grid_layout = new GridLayout(largeur + 1, hauteur);
 
-		GridLayout grid_layout = new GridLayout(g.hauteur + 1, g.largeur + 1);
+		makingGrid(grid_frame, grid_buttonlist, button_grid, grid_layout, g, largeur, hauteur);
+
 		grid_buttonlist.setLayout(grid_layout);
 
 		grid_buttonlist.add(grid_return);
@@ -90,7 +94,6 @@ public class Vue{
 			grid_frame.dispose();
 		});
 
-		//grid_frame.add(grid_buttonlist);
 
 		grid_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		grid_frame.setPreferredSize(new Dimension(800, 600));
@@ -100,11 +103,11 @@ public class Vue{
 	
 	}
 
-	public void makingGrid(JFrame grid_frame, JPanel grid_buttonlist, JButton[][] button_grid, Grille g){
-		for(int i = 0; i < g.largeur; i++){
-			for(int j = 0; j < g.hauteur; j++){
+	public void makingGrid(JFrame grid_frame, JPanel grid_buttonlist, JButton[][] button_grid, GridLayout grid_layout, Grille g, int largeur, int hauteur){
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
 				//if(!g.plateau[i][j].estVide){
-					JButton piece = new JButton(String.valueOf(i + ", " + j));
+					JButton piece = new JButton(String.valueOf(i + "" + j));
 					piece.setName(i + "" + j);
 					piece.setSize(new Dimension(10, 10));
 					piece.addActionListener((event) -> {
@@ -112,8 +115,13 @@ public class Vue{
 						int y = Integer.parseInt(String.valueOf(piece.getName().charAt(1)));
 						if(g.peutSupprimer(x, y)){
 							g.supprime(x, y);
-							//grid_buttonlist.removeAll();
-							//makingGrid(grid_frame, grid_buttonlist, button_grid, g);
+							g.gravite();
+							g.graviteHorizontale();
+							grid_buttonlist.removeAll();
+							makingGrid(grid_frame, grid_buttonlist, button_grid, grid_layout, g, largeur, hauteur);
+							grid_buttonlist.setLayout(grid_layout);
+							grid_buttonlist.revalidate();
+							grid_buttonlist.repaint();
 							grid_frame.revalidate();
 							grid_frame.repaint();
 						}
@@ -126,15 +134,16 @@ public class Vue{
 						piece.setBackground(Color.BLUE);
 					}else if(g.plateau[i][j].piece.nom == "jaune"){
 						piece.setBackground(Color.YELLOW);
-					}else if(g.plateau[i][j].piece instanceof Obstacle){
+					}else if(g.plateau[i][j].piece.nom == "animal"){
+						piece.setBackground(Color.PINK);
+					}if(g.plateau[i][j].estVide){
+						piece.setBackground(Color.WHITE);
+					}if(g.plateau[i][j].piece instanceof Obstacle){
 						piece.setBackground(Color.BLACK);
-					}else if(g.plateau[i][j].estVide){
-						piece.setBackground(Color.gray);
 					}
 					button_grid[i][j] = piece;
 					grid_buttonlist.add(button_grid[i][j]);
-				//}
-			}
+				}
 		}
 		grid_frame.add(grid_buttonlist);
 	}

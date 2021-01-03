@@ -26,7 +26,7 @@ public class Grille {
 	
 	public boolean peutSupprimer(int x,int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
 		int[][] adjacents = adjacentes(x, y);
-		if(adjacents.length > 0 && !(plateau[x][y].piece instanceof Animal) && !(plateau[x][y].piece instanceof Obstacle)){
+		if(adjacents.length > 0 && !(plateau[x][y].piece instanceof Animal) && !(plateau[x][y].piece instanceof Obstacle) && !plateau[x][y].estVide){
 			return true;
 		}
 		return false;
@@ -119,7 +119,7 @@ public class Grille {
 	public int nombrePieceColonneAuDessus(int x, int y){ //compte le nombre de pièces dans une colonne 
 		int nbColonnes = 0;
 		for(int i = 0; i < x; i++){
-			if(!plateau[i][y].estVide){
+			if(!plateau[i][y].estVide && !(plateau[i][y].piece instanceof Obstacle)){
 				nbColonnes++;
 			}
 		}
