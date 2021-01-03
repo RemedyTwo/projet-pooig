@@ -90,7 +90,7 @@ public class Vue{
 			grid_frame.dispose();
 		});
 
-		grid_frame.add(grid_buttonlist);
+		//grid_frame.add(grid_buttonlist);
 
 		grid_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		grid_frame.setPreferredSize(new Dimension(800, 600));
@@ -112,10 +112,8 @@ public class Vue{
 						int y = Integer.parseInt(String.valueOf(piece.getName().charAt(1)));
 						if(g.peutSupprimer(x, y)){
 							g.supprime(x, y);
-							grid_buttonlist.removeAll();
-							makingGrid(grid_frame, grid_buttonlist, button_grid, g);
-							grid_buttonlist.revalidate();
-							grid_buttonlist.repaint();
+							//grid_buttonlist.removeAll();
+							//makingGrid(grid_frame, grid_buttonlist, button_grid, g);
 							grid_frame.revalidate();
 							grid_frame.repaint();
 						}
@@ -138,6 +136,7 @@ public class Vue{
 				//}
 			}
 		}
+		grid_frame.add(grid_buttonlist);
 	}
 
 	private void rules() {
