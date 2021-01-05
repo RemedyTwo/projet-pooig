@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,6 +16,8 @@ public class Vue{
 			JButton level_select = new JButton("Modifier la difficulté");
 			JButton rules = new JButton("Règles");
 			JButton credits = new JButton("Crédits");
+
+	JButton retour = new JButton("Retour");
 	
 	public Vue(){
 		panneau.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
@@ -55,19 +58,7 @@ public class Vue{
 	}
 
 	private void Jeu(){
-		/*Case[][] niveau2 = {
-			{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal())}, //ligne 1
-			{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 2
-			{new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 3
-			{new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune())}, //ligne 4
-			{new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Rouge())}, //ligne 5
-			{new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())}, //ligne 6
-			{new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())}, //ligne 7
-			{new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())} //ligne 8
-		};
-        Grille g = new Grille(niveau2.length, niveau2[0].length, 4);
-        g.plateau = niveau2;
-		displayGrid(g);*/
+
 	}
 
 	public void displayGrid(Grille g){
@@ -75,24 +66,35 @@ public class Vue{
 		
 		JFrame grid_frame = new JFrame();
 		JPanel grid_buttonlist = new JPanel();
-		JButton[][] button_grid = new JButton[g.largeur][g.hauteur];
-		JButton grid_return = new JButton("Retour");
+			JButton[][] button_grid = new JButton[g.largeur][g.hauteur];
+		JPanel other_buttons = new JPanel();
+			JButton grid_reset = new JButton("Recommencer");
+			JButton grid_return = new JButton("Retour");
+		JButton[] button_extra = {grid_return, grid_reset};
 
 		int largeur = g.largeur;
 		int hauteur = g.hauteur;
 		
-		GridLayout grid_layout = new GridLayout(largeur + 1, hauteur);
+		GridLayout grid_layout = new GridLayout(largeur, hauteur);
 
 		makingGrid(grid_frame, grid_buttonlist, button_grid, grid_layout, g, largeur, hauteur);
 
 		grid_buttonlist.setLayout(grid_layout);
 
-		grid_buttonlist.add(grid_return);
-
 		grid_return.addActionListener((event) ->{
 			frame.setVisible(true);
 			grid_frame.dispose();
 		});
+
+		grid_reset.addActionListener((event) ->{
+			g.plateau = niveau.niveau3;
+			displayGrid(g);
+		});
+
+		other_buttons.add(grid_reset);
+		other_buttons.add(grid_return);
+
+		grid_frame.add(other_buttons, BorderLayout.SOUTH);
 
 
 		grid_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -106,46 +108,71 @@ public class Vue{
 	public void makingGrid(JFrame grid_frame, JPanel grid_buttonlist, JButton[][] button_grid, GridLayout grid_layout, Grille g, int largeur, int hauteur){
 		for(int i = 0; i < largeur; i++){
 			for(int j = 0; j < hauteur; j++){
-				//if(!g.plateau[i][j].estVide){
-					JButton piece = new JButton(String.valueOf(i + "" + j));
-					piece.setName(i + "" + j);
-					piece.setSize(new Dimension(10, 10));
-					piece.addActionListener((event) -> {
-						int x = Integer.parseInt(String.valueOf(piece.getName().charAt(0)));
-						int y = Integer.parseInt(String.valueOf(piece.getName().charAt(1)));
-						if(g.peutSupprimer(x, y)){
-							g.supprime(x, y);
-							g.gravite();
-							g.graviteHorizontale();
-							grid_buttonlist.removeAll();
-							makingGrid(grid_frame, grid_buttonlist, button_grid, grid_layout, g, largeur, hauteur);
-							grid_buttonlist.setLayout(grid_layout);
-							grid_buttonlist.revalidate();
-							grid_buttonlist.repaint();
-							grid_frame.revalidate();
-							grid_frame.repaint();
-						}
-					});
-					if(g.plateau[i][j].piece.nom == "rouge"){
-						piece.setBackground(Color.RED);
-					}else if(g.plateau[i][j].piece.nom == "vert"){
-						piece.setBackground(Color.GREEN);
-					}else if(g.plateau[i][j].piece.nom == "bleu"){
-						piece.setBackground(Color.BLUE);
-					}else if(g.plateau[i][j].piece.nom == "jaune"){
-						piece.setBackground(Color.YELLOW);
-					}else if(g.plateau[i][j].piece.nom == "animal"){
-						piece.setBackground(Color.PINK);
-					}if(g.plateau[i][j].estVide){
-						piece.setBackground(Color.WHITE);
-					}if(g.plateau[i][j].piece instanceof Obstacle){
-						piece.setBackground(Color.BLACK);
+				JButton piece = new JButton(String.valueOf(i + "" + j));
+				piece.setName(i + "" + j);
+				piece.setSize(new Dimension(10, 10));
+				piece.addActionListener((event) -> {
+					int x = Integer.parseInt(String.valueOf(piece.getName().charAt(0)));
+					int y = Integer.parseInt(String.valueOf(piece.getName().charAt(1)));
+					if(g.peutSupprimer(x, y)){
+						g.supprime(x, y);
+						g.gravite();
+						grid_buttonlist.removeAll();
+						makingGrid(grid_frame, grid_buttonlist, button_grid, grid_layout, g, largeur, hauteur);
+						grid_buttonlist.setLayout(grid_layout);
+						grid_buttonlist.revalidate();
+						grid_buttonlist.repaint();
+						grid_frame.revalidate();
+						grid_frame.repaint();
+					}else{
+						JFrame grid_erreur = new JFrame();
+						JLabel grid_erreur_text = new JLabel("Vous ne pouvez pas supprimer ce bloc !");
+						JButton grid_erreur_return = new JButton("Retour");
+
+						grid_erreur_text.setHorizontalAlignment(JLabel.CENTER);
+
+						grid_erreur.add(grid_erreur_text, BorderLayout.CENTER);
+
+						grid_erreur_return.addActionListener((event2) ->{
+							grid_erreur.dispose();
+						});
+
+						grid_erreur.add(grid_erreur_return, BorderLayout.PAGE_END);
+
+						grid_erreur.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+						grid_erreur.setPreferredSize(new Dimension(400, 150));
+						grid_erreur.setTitle("Erreur");
+						grid_erreur.pack();
+						grid_erreur.setLocationRelativeTo(null);
+						grid_erreur.setVisible(true);
 					}
-					button_grid[i][j] = piece;
-					grid_buttonlist.add(button_grid[i][j]);
+				});
+				if(g.plateau[i][j].piece.nom == "rouge"){
+					piece.setBackground(Color.RED);
+				}else if(g.plateau[i][j].piece.nom == "vert"){
+					piece.setBackground(Color.GREEN);
+				}else if(g.plateau[i][j].piece.nom == "bleu"){
+					piece.setBackground(Color.BLUE);
+				}else if(g.plateau[i][j].piece.nom == "jaune"){
+					piece.setBackground(Color.YELLOW);
+				}else if(g.plateau[i][j].piece.nom == "animal" && g.plateau[i][j].estVide == false){
+					piece.setBackground(Color.PINK);
+					try{
+						Image img = ImageIO.read(getClass().getResource("ressources/animal.jpg")).getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
+						piece.setIcon(new ImageIcon(img));
+					}catch(Exception e){
+
+					}
+				}if(g.plateau[i][j].estVide){
+					piece.setBackground(Color.WHITE);
+				}if(g.plateau[i][j].piece instanceof Obstacle){
+					piece.setBackground(Color.BLACK);
 				}
+				button_grid[i][j] = piece;
+				grid_buttonlist.add(button_grid[i][j]);
+			}
 		}
-		grid_frame.add(grid_buttonlist);
+		grid_frame.add(grid_buttonlist, BorderLayout.CENTER);
 	}
 
 	private void rules() {
@@ -219,8 +246,8 @@ public class Vue{
 		});
 			
 		niveau3.addActionListener((event)->{
-			Grille g = new Grille(niveau.niveau2.length, niveau.niveau2[0].length, 4);
-			g.plateau = niveau.niveau2;
+			Grille g = new Grille(niveau.niveau3.length, niveau.niveau3[0].length, 4);
+			g.plateau = niveau.niveau3;
 			displayGrid(g);
 		});
 			

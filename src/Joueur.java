@@ -60,7 +60,7 @@ public class Joueur {
 			if(grille.peutSupprimer(x,y)){
 				nbTours--;
 				grille.supprime(x,y);
-				grille.gravite();
+				grille.graviteVerticale();
 				grille.AnimalAuSol();
 				grille.graviteHorizontale();
 				grille.AnimalAuSol();

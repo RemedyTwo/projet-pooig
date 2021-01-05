@@ -29,7 +29,7 @@ public class Main {
 
         if(choix == 2){
         	JPanel level_panel=new JPanel();
-        	    			level_panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
+        	level_panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
     		GridLayout level_layout = new GridLayout(0, 1);
     		level_layout.setVgap(30);
     		level_panel.setLayout(level_layout);

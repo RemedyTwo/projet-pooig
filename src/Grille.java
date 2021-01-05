@@ -126,16 +126,30 @@ public class Grille {
 		return nbColonnes;
 	}
 
-	public void gravite(){ //applique la gravité
+	public int nombrePieceLigneADroite(int x, int y){
+		int nbLignes = 0;
+		for(int j = hauteur - 1; j > y; j--){
+			if(!plateau[x][j].estVide && !(plateau[x][j].piece instanceof Obstacle)){
+				nbLignes++;
+			}
+		}
+		return nbLignes;
+	}
+
+	//applique la gravité, pour se faire, la fonction traverse le plateau en commencant par le coin inférieur droit colonne par colonne puis ligne par ligne.
+	//si ce n'est pas un obstacle, on continue. 
+	public void graviteVerticale(){ //applique la gravité
 		for(int i = largeur - 1; i > 0; i--){
 			for(int j = hauteur - 1 ; j >= 0; j--){
-				int nb = nombrePieceColonneAuDessus(i, j);
-				if(plateau[i][j].estVide && nb > 0 && !(plateau[i][j].piece instanceof Obstacle)){
-					while(!plateau[0][j].estVide){
-						for(int k = i; k >= 0; k--){
-								Case tmp = plateau[i][j];
-								plateau[i][j] = plateau[k][j];
-								plateau[k][j] = tmp;
+				if(!(plateau[i][j].piece instanceof Obstacle) && plateau[i][j].estVide){
+					int nb = nombrePieceColonneAuDessus(i, j);
+					if(nb > 0){
+						int r = i - 1;
+						while(plateau[i][j].estVide){
+							Case tmp = plateau[i][j];
+							plateau[i][j] = plateau[r][j];
+							plateau[r][j] = tmp;
+							r--;
 						}
 					}
 				}
@@ -153,16 +167,92 @@ public class Grille {
 	}
 
 	public void graviteHorizontale(){
-		for(int i = 0; i < largeur; i++){
-			if(plateau[i][0].estVide){
-				while(plateau[i][0].estVide && plateau[i][0].piece.nom!="obstacle"){
-					for(int j = 0; j < hauteur - 1; j++){
-						Case tmp = plateau[i][j];
-						plateau[i][j] = plateau[i][j+1];
-						plateau[i][j+1] = tmp;
+		for(int i = largeur - 1; i > 0; i--){
+			for(int j = hauteur - 1 ; j >= 0; j--){
+				if(!(plateau[i][j].piece instanceof Obstacle) && plateau[i][j].estVide){
+					int nb = nombrePieceLigneADroite(i, j);
+					if(nb > 0){
+						int r = j + 1;
+						while(plateau[i][j].estVide){
+							Case tmp = plateau[i][j];
+							plateau[i][j] = plateau[i][r];
+							plateau[i][r] = tmp;
+							r++;
+						}
 					}
 				}
 			}
+		}
+	}
+
+	public Case[][] copiePlateau() {
+		Case[][] plateau_copie = new Case[largeur][hauteur];
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				if(plateau[i][j].piece instanceof Obstacle){
+					plateau_copie[i][j] = new Case(new Obstacle());
+				}if(plateau[i][j].piece instanceof Animal){
+					plateau_copie[i][j] = new Case(new Animal());
+				}if(plateau[i][j].piece instanceof Cube){
+					if(plateau[i][j].piece.nom == "rouge"){
+						plateau_copie[i][j] = new Case(new Cube.Rouge());
+					}if(plateau[i][j].piece.nom == "vert"){
+						plateau_copie[i][j] = new Case(new Cube.Vert());
+					}if(plateau[i][j].piece.nom == "bleu"){
+						plateau_copie[i][j] = new Case(new Cube.Bleu());
+					}if(plateau[i][j].piece.nom == "jaune"){
+						plateau_copie[i][j] = new Case(new Cube.Jaune());
+					}
+				}if(plateau[i][j].estVide){
+					plateau_copie[i][j].estVide = true;
+				}else{
+					plateau_copie[i][j].estVide = false;
+				}
+			}
+		}
+		return plateau_copie;
+	}
+
+	public boolean comparaison(Case[][] plateau_copie){
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				if(plateau[i][j].piece instanceof Obstacle && !(plateau_copie[i][j].piece instanceof Obstacle)){
+					return false;
+				}if(plateau[i][j].piece instanceof Animal && !(plateau_copie[i][j].piece instanceof Animal)){
+					return false;
+				}if(plateau[i][j].piece instanceof Cube && !(plateau_copie[i][j].piece instanceof Cube)){
+					if(plateau[i][j].piece.nom == "rouge" && !(plateau_copie[i][j].piece.nom == "rouge")){
+						return false;
+					}if(plateau[i][j].piece.nom == "vert" && !(plateau_copie[i][j].piece.nom == "vert")){
+						return false;
+					}if(plateau[i][j].piece.nom == "bleu" && !(plateau_copie[i][j].piece.nom == "bleu")){
+						return false;
+					}if(plateau[i][j].piece.nom == "jaune" && !(plateau_copie[i][j].piece.nom == "jaune")){
+						return false;
+					}
+				}if(plateau[i][j].estVide && !(plateau_copie[i][j].estVide)){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public void gravite(){
+		Case[][] plateau_copie = copiePlateau();
+		graviteVerticale();
+		graviteHorizontaleRecursive();
+		AnimalAuSol();
+		if(!comparaison(plateau_copie)){
+			gravite();
+		}
+	}
+
+	public void graviteHorizontaleRecursive(){
+		Case[][] plateau_copie = copiePlateau();
+		graviteHorizontale();
+		if(!comparaison(plateau_copie)){
+			graviteHorizontaleRecursive();
 		}
 	}
 
