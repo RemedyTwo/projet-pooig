@@ -7,9 +7,12 @@ public class Grille implements Serializable{
 
 	Scanner scanner;
 	public Case[][]plateau;
-	public int hauteur, largeur, nbAnimaux, score;
+	public int largeur;
+	public int hauteur;
+	public int nbAnimaux;
+	public Modele modele;
 
-	public Grille(Case[][] plateau) {
+	public Grille(Case[][] plateau, int score_min, int tour_max) {
 		this.plateau = plateau;
 
 		largeur = plateau.length;
@@ -24,7 +27,7 @@ public class Grille implements Serializable{
 			}
 		}
 		
-		score = 0;
+		modele = new Modele(this, score_min, tour_max);
 	}
 
 	public void AnimalAuSol() {
@@ -37,14 +40,7 @@ public class Grille implements Serializable{
 			}
 		}
 	}
-	
-	public boolean peutSupprimer(int x, int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
-		int[][] adjacents = adjacentes(x, y);
-		if(adjacents.length > 0 && !(plateau[x][y].piece instanceof Animal) && !(plateau[x][y].piece instanceof Obstacle) && !plateau[x][y].estVide){
-			return true;
-		}
-		return false;
-	}
+
 
 	public int[][] casesAdjacentesIgnorer(int x, int y, ArrayList<int[]> listeAIgnorer, ArrayList<int[]> casesAdjacentes){
 		if(casesAdjacentes == null && listeAIgnorer == null){
@@ -121,13 +117,22 @@ public class Grille implements Serializable{
 		}
 		return true;
 	}
+	
+	public boolean peutSupprimer(int x, int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
+		int[][] adjacents = adjacentes(x, y);
+		if(adjacents.length > 0 && !(plateau[x][y].piece instanceof Animal) && !(plateau[x][y].piece instanceof Obstacle) && !plateau[x][y].estVide){
+			return true;
+		}
+		return false;
+	}
 
 	public void supprime(int x, int y){ //supprime un point et ses adjacents de la même couleur
 		int[][] adjacents = (casesAdjacentesIgnorer(x, y, null, null));
 		plateau[x][y].estVide = true;
+		modele.score += 100;
 		for(int i = 0; i < adjacents.length; i++){
 			plateau[adjacents[i][0]][adjacents[i][1]].estVide = true;
-			score += 100;
+			modele.score += 100;
 		}
 	}
 
@@ -135,6 +140,16 @@ public class Grille implements Serializable{
 		int nbColonnes = 0;
 		for(int i = 0; i < x; i++){
 			if(!plateau[i][y].estVide && !(plateau[i][y].piece instanceof Obstacle)){
+				nbColonnes++;
+			}
+		}
+		return nbColonnes;
+	}
+
+	public int nombrePieceColonneAuDessusSansAnimaux(int x, int y){ //compte le nombre de pièces dans une colonne 
+		int nbColonnes = 0;
+		for(int i = 0; i < x; i++){
+			if(!plateau[i][y].estVide && !(plateau[i][y].piece instanceof Obstacle) && !(plateau[i][y].piece instanceof Animal)){
 				nbColonnes++;
 			}
 		}
@@ -172,31 +187,44 @@ public class Grille implements Serializable{
 		}
 	}
 
-	public boolean colonneVide(int y){
-		for(int i = 0; i < largeur; i++){
-			if(!plateau[i][y].estVide){
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public void graviteHorizontale(){
-		for(int i = largeur - 1; i > 0; i--){
-			for(int j = hauteur - 1 ; j >= 0; j--){
-				if(!(plateau[i][j].piece instanceof Obstacle) && plateau[i][j].estVide){
-					int nb = nombrePieceLigneADroite(i, j);
-					if(nb > 0){
-						int r = j + 1;
-						while(plateau[i][j].estVide){
+		int a = largeur - 1;
+		for(int j = 0; j < hauteur - 1; j++){
+			if(plateau[a][j].piece instanceof Obstacle){
+				while(plateau[a][j].piece instanceof Obstacle){
+					a--;
+				}
+			}
+			if(plateau[a][j].estVide){
+				int nb = nombrePieceColonneAuDessusSansAnimaux(largeur - 1, j+1);
+				if(nb == 0){
+					for(int i = 0; i < largeur; i++){
+						if(!(plateau[i][j].piece instanceof Obstacle) && !(plateau[i][j+1].piece instanceof Obstacle) && !plateau[i][j+1].estVide){
 							Case tmp = plateau[i][j];
-							plateau[i][j] = plateau[i][r];
-							plateau[i][r] = tmp;
-							r++;
+							plateau[i][j] = plateau[i][j+1];
+							plateau[i][j+1] = tmp;
 						}
 					}
 				}
 			}
+		}
+	}
+
+	public void graviteHorizontale_recursive(){
+		Case[][] plateau_copie = copiePlateau();
+		graviteHorizontale();
+		if(!comparaison(plateau_copie)){
+			graviteHorizontale_recursive();
+		}
+	}
+
+	public void graviteRecursive(){
+		Case[][] plateau_copie = copiePlateau();
+		graviteVerticale();
+		graviteHorizontale_recursive();
+		AnimalAuSol();
+		if(!comparaison(plateau_copie)){
+			graviteRecursive();
 		}
 	}
 
@@ -222,8 +250,10 @@ public class Grille implements Serializable{
 						plateau_copie[i][j] = new Case(new Cube.Bleu());
 					}if(plateau[i][j].piece instanceof Cube.Jaune){
 						plateau_copie[i][j] = new Case(new Cube.Jaune());
+					}if(plateau[i][j].piece instanceof Cube.Orange){
+						plateau_copie[i][j] = new Case(new Cube.Orange());
 					}
-				}if(plateau[i][j].estVide){
+				}if(plateau[i][j].estVide || plateau[i][j].piece.nom == "vide"){
 					plateau_copie[i][j].estVide = true;
 				}else{
 					plateau_copie[i][j].estVide = false;
@@ -258,22 +288,29 @@ public class Grille implements Serializable{
 		return true;
 	}
 
-	public void gravite(){
-		Case[][] plateau_copie = copiePlateau();
-		graviteVerticale();
-		graviteHorizontaleRecursive();
-		AnimalAuSol();
-		if(!comparaison(plateau_copie)){
-			gravite();
+	public int scoreMax(){
+		int scoreMax = 0;
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				if(plateau[i][j].piece instanceof Cube){
+					scoreMax += 100;
+				}
+			}
 		}
+		return scoreMax;
 	}
 
-	public void graviteHorizontaleRecursive(){
-		Case[][] plateau_copie = copiePlateau();
-		graviteHorizontale();
-		if(!comparaison(plateau_copie)){
-			graviteHorizontaleRecursive();
+	public int[] aide(){
+		int[] aide = new int[2];
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				if(peutSupprimer(i, j)){
+					aide[0] = i;
+					aide[1] = j;
+				}
+			}
 		}
+		return aide;
 	}
 
 	public void tour(){
@@ -287,14 +324,16 @@ public class Grille implements Serializable{
 		System.out.print("\n");
 		if(peutSupprimer(x,y)){
 			supprime(x,y);
-			gravite();
+			graviteRecursive();
 		}else{
 			System.out.println("Vous ne pouvez pas supprimer ce bloc.\n");
 		}
 		if(nbAnimaux >= 0){
 			tour();
 		}else{
-			System.out.println("Vous avez gagné !");
+			if(modele.score_min == 0 || modele.score_min < modele.score){
+				System.out.println("Vous avez gagné !");
+			}
 		}
 	}
 

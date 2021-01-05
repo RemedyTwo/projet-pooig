@@ -10,4 +10,8 @@ public class Joueur implements Serializable{
 		this.nom = nom;
 		score_cumule = 0;
 	}
+
+	public void addScore(int score){
+		score_cumule += score;
+	}
 }
