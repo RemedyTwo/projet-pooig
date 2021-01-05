@@ -1,16 +1,30 @@
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Scanner;
 
-public class Grille {
+public class Grille implements Serializable{
 //Ce code gère la grille du jeu.
 
+	Scanner scanner;
 	public Case[][]plateau;
-	public int hauteur, largeur, nbAnimaux;
+	public int hauteur, largeur, nbAnimaux, score;
 
-	public Grille(int l,int h, int nbAnimaux) {
-		this.largeur = l;
-		this.hauteur = h;
-		this.plateau = new Case[l][h];
-		this.nbAnimaux = nbAnimaux;
+	public Grille(Case[][] plateau) {
+		this.plateau = plateau;
+
+		largeur = plateau.length;
+		hauteur = plateau[0].length;
+
+		nbAnimaux = 0;
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				if(plateau[i][j].piece instanceof Animal){
+					nbAnimaux++;
+				}
+			}
+		}
+		
+		score = 0;
 	}
 
 	public void AnimalAuSol() {
@@ -24,7 +38,7 @@ public class Grille {
 		}
 	}
 	
-	public boolean peutSupprimer(int x,int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
+	public boolean peutSupprimer(int x, int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
 		int[][] adjacents = adjacentes(x, y);
 		if(adjacents.length > 0 && !(plateau[x][y].piece instanceof Animal) && !(plateau[x][y].piece instanceof Obstacle) && !plateau[x][y].estVide){
 			return true;
@@ -112,7 +126,8 @@ public class Grille {
 		int[][] adjacents = (casesAdjacentesIgnorer(x, y, null, null));
 		plateau[x][y].estVide = true;
 		for(int i = 0; i < adjacents.length; i++){
-			plateau[adjacents[i][0]][adjacents[i][1]].estVide = true;;
+			plateau[adjacents[i][0]][adjacents[i][1]].estVide = true;
+			score += 100;
 		}
 	}
 
@@ -189,18 +204,23 @@ public class Grille {
 		Case[][] plateau_copie = new Case[largeur][hauteur];
 		for(int i = 0; i < largeur; i++){
 			for(int j = 0; j < hauteur; j++){
+				plateau_copie[i][j] = new Case(new Piece(""));
+			}
+		}
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
 				if(plateau[i][j].piece instanceof Obstacle){
 					plateau_copie[i][j] = new Case(new Obstacle());
 				}if(plateau[i][j].piece instanceof Animal){
 					plateau_copie[i][j] = new Case(new Animal());
 				}if(plateau[i][j].piece instanceof Cube){
-					if(plateau[i][j].piece.nom == "rouge"){
+					if(plateau[i][j].piece instanceof Cube.Rouge){
 						plateau_copie[i][j] = new Case(new Cube.Rouge());
-					}if(plateau[i][j].piece.nom == "vert"){
+					}if(plateau[i][j].piece instanceof Cube.Vert){
 						plateau_copie[i][j] = new Case(new Cube.Vert());
-					}if(plateau[i][j].piece.nom == "bleu"){
+					}if(plateau[i][j].piece instanceof Cube.Bleu){
 						plateau_copie[i][j] = new Case(new Cube.Bleu());
-					}if(plateau[i][j].piece.nom == "jaune"){
+					}if(plateau[i][j].piece instanceof Cube.Jaune){
 						plateau_copie[i][j] = new Case(new Cube.Jaune());
 					}
 				}if(plateau[i][j].estVide){
@@ -253,6 +273,28 @@ public class Grille {
 		graviteHorizontale();
 		if(!comparaison(plateau_copie)){
 			graviteHorizontaleRecursive();
+		}
+	}
+
+	public void tour(){
+		//On joue un tour en entrant 2 entiers correspondant aux coordonnées d'un cube. si le cube sélectionné ne peut pas être supprimé, on relance le tour. A la fin du tour on vérifie si le jeu n'est pas fini et, dans le cas où il ne l'est pas, on joue le tour suivant.
+		affichage();
+		scanner = new Scanner(System.in); 
+		System.out.print("\nSélectionnez la ligne de la case à supprimer : ");
+		int x = scanner.nextInt() - 1;
+		System.out.print("\nSélectionnez la colonne de la case à supprimer : ");
+		int y = scanner.nextInt() - 1;
+		System.out.print("\n");
+		if(peutSupprimer(x,y)){
+			supprime(x,y);
+			gravite();
+		}else{
+			System.out.println("Vous ne pouvez pas supprimer ce bloc.\n");
+		}
+		if(nbAnimaux >= 0){
+			tour();
+		}else{
+			System.out.println("Vous avez gagné !");
 		}
 	}
 
