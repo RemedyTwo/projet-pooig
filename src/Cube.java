@@ -27,4 +27,10 @@ public class Cube extends Piece{
 			super("jaune");
 		}
 	}
+
+	static class Orange extends Cube{
+		public Orange(){
+			super("orange");
+		}
+	}
 }

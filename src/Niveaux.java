@@ -1,6 +1,30 @@
 import java.io.Serializable;
 
 public class Niveaux implements Serializable {
+    Case c = new Case(new Piece(""));
+
+    Case[][] plateau_niveau1 = {
+        {new Case(new Obstacle()), new Case(new Animal()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Animal()), new Case(new Obstacle())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Orange()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Orange()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())},
+        {new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Jaune()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert())}
+    };
+
+    Case[][] plateau_niveau2 = {
+        {new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Animal()), new Case(new Piece("vide")), new Case(new Animal()), new Case(new Piece("vide")), new Case(new Animal())},
+        {new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Cube.Vert()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge())},
+        {new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Cube.Vert()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge())},
+        {new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Orange()), new Case(new Cube.Vert())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Orange()), new Case(new Cube.Vert())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Rouge()), new Case(new Cube.Vert()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Obstacle())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Obstacle())},
+    };
+
     Case[][] plateau_niveau3 = {
         {new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal()), new Case(new Animal())}, //ligne 1
         {new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Cube.Vert()), new Case(new Cube.Vert()), new Case(new Cube.Jaune()), new Case(new Cube.Vert()), new Case(new Cube.Bleu())}, //ligne 2
@@ -11,9 +35,58 @@ public class Niveaux implements Serializable {
         {new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle())}, //ligne 7
         {new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Cube.Vert()), new Case(new Cube.Bleu()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle())} //ligne 8
     };
-    Grille niveau3 = new Grille(plateau_niveau3);
 
-    public Grille getNiveau3(){
-        return niveau3;
-    }
+    Case[][] plateau_niveau4 = {
+        {new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Animal()), new Case(new Obstacle()), new Case(new Animal()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle())},
+        {new Case(new Obstacle()), new Case(new Piece("vide")), new Case(new Obstacle()), new Case(new Cube.Rouge()), new Case(new Piece("vide")), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Piece("vide")), new Case(new Obstacle())},
+        {new Case(new Animal()), new Case(new Piece("vide")), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Piece("vide")), new Case(new Animal())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Cube.Rouge()), new Case(new Obstacle()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Obstacle()), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Obstacle()), new Case(new Cube.Bleu()), new Case(new Obstacle()), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Obstacle()), new Case(new Cube.Rouge()), new Case(new Obstacle()), new Case(new Cube.Rouge()), new Case(new Obstacle()), new Case(new Cube.Rouge()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Cube.Bleu()), new Case(new Obstacle()), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Obstacle()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())}
+    };
+
+    Case[][] plateau_niveau42 = {
+        {new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Animal()), new Case(new Obstacle()), new Case(new Animal()), new Case(new Obstacle()), new Case(new Obstacle()), new Case(new Obstacle())},
+        {new Case(new Obstacle()), new Case(new Piece("vide")), new Case(new Obstacle()), new Case(new Cube.Rouge()), new Case(new Piece("vide")), new Case(new Cube.Orange()), new Case(new Obstacle()), new Case(new Piece("vide")), new Case(new Obstacle())},
+        {new Case(new Animal()), new Case(new Piece("vide")), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Piece("vide")), new Case(new Animal())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Orange())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())},
+        {new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge()), new Case(new Cube.Rouge())},
+        {new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Bleu()), new Case(new Cube.Orange()), new Case(new Cube.Rouge()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu()), new Case(new Cube.Bleu())}
+    };
+    Grille niveau1 = new Grille(plateau_niveau1, 0, 0);
+    Grille niveau2 = new Grille(plateau_niveau2, 0, 0);
+    Grille niveau3 = new Grille(plateau_niveau3, 0, 0);
+    Grille niveau4 = new Grille(plateau_niveau42, 5000, 10);
 }

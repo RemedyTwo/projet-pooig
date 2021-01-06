@@ -59,21 +59,27 @@ public class Main implements Serializable{
 			+ "1/ Niveau 1\n"
 			+ "2/ Niveau 2\n"
 			+ "3/ Niveau 3\n"
+			+ "4/ Niveau 4\n"
 			+ "\nVotre choix : "
 			);
 
-			Niveaux n = new Niveaux();
+			Niveaux niveaux = new Niveaux();
 
 			scanner = new Scanner(System.in);
 
 			int choix2 = scanner.nextInt();
 
 			if(choix2 == 1){
-
+				Grille g = new Grille(niveaux.plateau_niveau1, 0, 0);
+				g.tour();
 			}else if(choix2 == 2){
-
+				Grille g = new Grille(niveaux.plateau_niveau2, 0, 0);
+				g.tour();
 			}else if(choix2 == 3){
-				Grille g = n.getNiveau3();
+				Grille g = new Grille(niveaux.plateau_niveau3, 0, 0);
+				g.tour();
+			}else if(choix2 == 4){
+				Grille g = new Grille(niveaux.plateau_niveau4, 0, 0);
 				g.tour();
 			}else{
 				System.out.println("Niveau sélectionné inexistant.");

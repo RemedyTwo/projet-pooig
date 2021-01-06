@@ -7,19 +7,9 @@ public class Case implements Serializable{
 	Piece piece;
 	
 	public Case(Piece piece) {
-		
 		this.piece = piece;
-	}
-	
-	public String getValeur() {
-	//On identifie quelle pièce se trouve dans la case.
-		try{
-			if(this.piece.nom != null){
-				return this.piece.nom;
-			}
-		}catch(Exception e){
-			return null;
+		if(piece.nom == "vide"){
+			estVide = true;
 		}
-		return null;
 	}
 }
