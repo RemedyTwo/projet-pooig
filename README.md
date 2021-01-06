@@ -12,4 +12,8 @@ java Main
 
 # Utilisation
 
+<<<<<<< HEAD
 Le programme est normalement assez clair à lui-même !
+=======
+Le programme est clair!
+>>>>>>> 55f02be78f47fe2d9bd30c146d1c8846f24c3cb3

@@ -1,30 +1,19 @@
-import java.io.*;
-import java.awt.image.*;
-import javax.imageio.*;
+import java.io.Serializable;
 
-public class Modele{
+public class Modele implements Serializable{
+	Grille grille;
+	int score_min;
+	int score;
+	int score_max;
 
-	private BufferedImage[][] image;
-	public Grille grille;
-	
-	public Modele() throws IOException{
-		image = new BufferedImage[grille.largeur][grille.hauteur];
-		for(int i=0;i<grille.plateau.length;i++){
-			for(int j=0;j<grille.plateau[i].length;j++){
-				if(!grille.plateau[i][j].estVide){
-					try {
-						String nom = grille.plateau[i][j].piece.nom + ".jpg";
-						this.image[i][j]=ImageIO.read(new File(nom));
-					}catch (IOException e) {
-			 			System.err.println("Path not found");
-            					e.printStackTrace();
-					}
-				}
-			}
-		}
+	int tour;
+	int tour_max;
+
+	public Modele(Grille grille, int score_min, int tour_max){
+		this.grille = grille;
+		this.score_min = score_min;
+		tour = 1;
+		this.tour_max = tour_max;
+		score_max = grille.scoreMax();
 	}
-	
-	public BufferedImage getImage(int x,int y) {
-			return image[x][y];			
-	}			
 }
