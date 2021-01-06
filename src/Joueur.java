@@ -12,6 +12,7 @@ public class Joueur implements Serializable{
 		score_cumule = 0;
 	}
 
+	//ajoute au score la valeur mise en argument
 	public void addScore(int score){
 		score_cumule += score;
 	}

@@ -15,6 +15,7 @@ public class Vue extends JFrame {
 	public Niveaux niveau = new Niveaux();
 	public Joueur joueur = new Joueur("");
 
+	//constructeur
 	public Vue() {
 		menuPrincipal();
 
@@ -26,6 +27,7 @@ public class Vue extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
+	//affiche le menu principal
 	public void menuPrincipal() {
 		JPanel panneau = new JPanel();
 		try {
@@ -127,6 +129,7 @@ public class Vue extends JFrame {
 		repaint();
 	}
 
+	//affiche la grille mise en commentaire
 	public void displayGrid(Grille grille, Grille niveau_og){
 		getContentPane().removeAll();
 
@@ -277,6 +280,7 @@ public class Vue extends JFrame {
 		repaint();
 	}
 
+	//fonction récursive pour l'affichage du plateau
 	public void makingGrid(JPanel grid_buttonlist, JButton[][] button_grid, Grille grille, Grille grille2){
 		JPanel top_components = new JPanel();
 
@@ -421,31 +425,21 @@ public class Vue extends JFrame {
 	}
 
 	private void rules() {
-		setVisible(false);
 
-		JFrame rules_frame = new JFrame();
-		JLabel rules_text = new JLabel("Le but est simple : il s'agit de libérer les animaux bloqués en haut des boites en détruisant celles-ci. Les boîtes destructibles sont celles qui ont au moins une boîte de même couleur en adjacence. Faite descendre tous les animaux en bas de l'écran et vous gagnez! Attention: les cases noires ne peuvent pas être supprimées.");
-		JPanel rules_panel = new JPanel(); 
+		JLabel rules_text = new JLabel("<html>Le but est simple : il s'agit de libérer les animaux bloqués en haut des boites en détruisant ces dernières.<br/>Les boîtes destructibles sont celles qui ont au moins une boîte de même couleur en adjacence.<br/>Faite descendre tous les animaux en bas de l'écran et vous gagnez!<br/>Les cases noires désignent les obstacles et les cases blanches sont vides, et ne peuvent donc pas être sélecitonné<br>Il est possible d'obtenir de l'aide en laissant un robot joué ou en affichant une case supprimable, mais vous subirez un malus de points...</html>");
 		JButton rules_return = new JButton("Retour");
 
-		BorderLayout rules_layout = new BorderLayout();
-		rules_panel.setLayout(rules_layout);
-
-		rules_panel.add(rules_return);
+		getContentPane().removeAll();
 
 		rules_return.addActionListener((event) ->{
-			setVisible(true);
-			rules_frame.dispose();
+			menuPrincipal();
 		});
 
-		rules_frame.add(rules_panel, BorderLayout.SOUTH);
-		rules_frame.add(rules_text);
+		add(rules_return, BorderLayout.SOUTH);
+		add(rules_text, BorderLayout.CENTER);
 
-		rules_frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		rules_frame.setTitle("Pet Rescue Saga");
-		rules_frame.pack();
-		rules_frame.setLocationRelativeTo(null);
-		rules_frame.setVisible(true);
+		revalidate();
+		repaint();
 	}
 	
 	private void selectLevel(){	
