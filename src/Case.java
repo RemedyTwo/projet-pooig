@@ -1,4 +1,6 @@
-public class Case {
+import java.io.Serializable;
+
+public class Case implements Serializable{
 //Ce code gère une case du plateau.
 	boolean estVide = false;
 	//boolean visible;

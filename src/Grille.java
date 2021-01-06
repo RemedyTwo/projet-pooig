@@ -1,16 +1,30 @@
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Scanner;
 
-public class Grille {
+public class Grille implements Serializable{
 //Ce code gère la grille du jeu.
 
+	Scanner scanner;
 	public Case[][]plateau;
-	public int hauteur, largeur, nbAnimaux;
+	public int hauteur, largeur, nbAnimaux, score;
 
-	public Grille(int l,int h, int nbAnimaux) {
-		this.largeur = l;
-		this.hauteur = h;
-		this.plateau = new Case[l][h];
-		this.nbAnimaux = nbAnimaux;
+	public Grille(Case[][] plateau) {
+		this.plateau = plateau;
+
+		largeur = plateau.length;
+		hauteur = plateau[0].length;
+
+		nbAnimaux = 0;
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				if(plateau[i][j].piece instanceof Animal){
+					nbAnimaux++;
+				}
+			}
+		}
+		
+		score = 0;
 	}
 
 	public void AnimalAuSol() {
@@ -24,9 +38,9 @@ public class Grille {
 		}
 	}
 	
-	public boolean peutSupprimer(int x,int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
+	public boolean peutSupprimer(int x, int y){//vérifie s'il existe au moins une adjacente à un point pour savoir s'il peut etre supprimé
 		int[][] adjacents = adjacentes(x, y);
-		if(adjacents.length > 0 && !(plateau[x][y].piece instanceof Animal) && !(plateau[x][y].piece instanceof Obstacle)){
+		if(adjacents.length > 0 && !(plateau[x][y].piece instanceof Animal) && !(plateau[x][y].piece instanceof Obstacle) && !plateau[x][y].estVide){
 			return true;
 		}
 		return false;
@@ -112,30 +126,45 @@ public class Grille {
 		int[][] adjacents = (casesAdjacentesIgnorer(x, y, null, null));
 		plateau[x][y].estVide = true;
 		for(int i = 0; i < adjacents.length; i++){
-			plateau[adjacents[i][0]][adjacents[i][1]].estVide = true;;
+			plateau[adjacents[i][0]][adjacents[i][1]].estVide = true;
+			score += 100;
 		}
 	}
 
 	public int nombrePieceColonneAuDessus(int x, int y){ //compte le nombre de pièces dans une colonne 
 		int nbColonnes = 0;
 		for(int i = 0; i < x; i++){
-			if(!plateau[i][y].estVide){
+			if(!plateau[i][y].estVide && !(plateau[i][y].piece instanceof Obstacle)){
 				nbColonnes++;
 			}
 		}
 		return nbColonnes;
 	}
 
-	public void gravite(){ //applique la gravité
+	public int nombrePieceLigneADroite(int x, int y){
+		int nbLignes = 0;
+		for(int j = hauteur - 1; j > y; j--){
+			if(!plateau[x][j].estVide && !(plateau[x][j].piece instanceof Obstacle)){
+				nbLignes++;
+			}
+		}
+		return nbLignes;
+	}
+
+	//applique la gravité, pour se faire, la fonction traverse le plateau en commencant par le coin inférieur droit colonne par colonne puis ligne par ligne.
+	//si ce n'est pas un obstacle, on continue. 
+	public void graviteVerticale(){ //applique la gravité
 		for(int i = largeur - 1; i > 0; i--){
 			for(int j = hauteur - 1 ; j >= 0; j--){
-				int nb = nombrePieceColonneAuDessus(i, j);
-				if(plateau[i][j].estVide && nb > 0 && !(plateau[i][j].piece instanceof Obstacle)){
-					while(!plateau[0][j].estVide){
-						for(int k = i; k >= 0; k--){
-								Case tmp = plateau[i][j];
-								plateau[i][j] = plateau[k][j];
-								plateau[k][j] = tmp;
+				if(!(plateau[i][j].piece instanceof Obstacle) && plateau[i][j].estVide){
+					int nb = nombrePieceColonneAuDessus(i, j);
+					if(nb > 0){
+						int r = i - 1;
+						while(plateau[i][j].estVide){
+							Case tmp = plateau[i][j];
+							plateau[i][j] = plateau[r][j];
+							plateau[r][j] = tmp;
+							r--;
 						}
 					}
 				}
@@ -153,16 +182,119 @@ public class Grille {
 	}
 
 	public void graviteHorizontale(){
-		for(int i = 0; i < largeur; i++){
-			if(plateau[i][0].estVide){
-				while(plateau[i][0].estVide && plateau[i][0].piece.nom!="obstacle"){
-					for(int j = 0; j < hauteur - 1; j++){
-						Case tmp = plateau[i][j];
-						plateau[i][j] = plateau[i][j+1];
-						plateau[i][j+1] = tmp;
+		for(int i = largeur - 1; i > 0; i--){
+			for(int j = hauteur - 1 ; j >= 0; j--){
+				if(!(plateau[i][j].piece instanceof Obstacle) && plateau[i][j].estVide){
+					int nb = nombrePieceLigneADroite(i, j);
+					if(nb > 0){
+						int r = j + 1;
+						while(plateau[i][j].estVide){
+							Case tmp = plateau[i][j];
+							plateau[i][j] = plateau[i][r];
+							plateau[i][r] = tmp;
+							r++;
+						}
 					}
 				}
 			}
+		}
+	}
+
+	public Case[][] copiePlateau() {
+		Case[][] plateau_copie = new Case[largeur][hauteur];
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				plateau_copie[i][j] = new Case(new Piece(""));
+			}
+		}
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				if(plateau[i][j].piece instanceof Obstacle){
+					plateau_copie[i][j] = new Case(new Obstacle());
+				}if(plateau[i][j].piece instanceof Animal){
+					plateau_copie[i][j] = new Case(new Animal());
+				}if(plateau[i][j].piece instanceof Cube){
+					if(plateau[i][j].piece instanceof Cube.Rouge){
+						plateau_copie[i][j] = new Case(new Cube.Rouge());
+					}if(plateau[i][j].piece instanceof Cube.Vert){
+						plateau_copie[i][j] = new Case(new Cube.Vert());
+					}if(plateau[i][j].piece instanceof Cube.Bleu){
+						plateau_copie[i][j] = new Case(new Cube.Bleu());
+					}if(plateau[i][j].piece instanceof Cube.Jaune){
+						plateau_copie[i][j] = new Case(new Cube.Jaune());
+					}
+				}if(plateau[i][j].estVide){
+					plateau_copie[i][j].estVide = true;
+				}else{
+					plateau_copie[i][j].estVide = false;
+				}
+			}
+		}
+		return plateau_copie;
+	}
+
+	public boolean comparaison(Case[][] plateau_copie){
+		for(int i = 0; i < largeur; i++){
+			for(int j = 0; j < hauteur; j++){
+				if(plateau[i][j].piece instanceof Obstacle && !(plateau_copie[i][j].piece instanceof Obstacle)){
+					return false;
+				}if(plateau[i][j].piece instanceof Animal && !(plateau_copie[i][j].piece instanceof Animal)){
+					return false;
+				}if(plateau[i][j].piece instanceof Cube && !(plateau_copie[i][j].piece instanceof Cube)){
+					if(plateau[i][j].piece.nom == "rouge" && !(plateau_copie[i][j].piece.nom == "rouge")){
+						return false;
+					}if(plateau[i][j].piece.nom == "vert" && !(plateau_copie[i][j].piece.nom == "vert")){
+						return false;
+					}if(plateau[i][j].piece.nom == "bleu" && !(plateau_copie[i][j].piece.nom == "bleu")){
+						return false;
+					}if(plateau[i][j].piece.nom == "jaune" && !(plateau_copie[i][j].piece.nom == "jaune")){
+						return false;
+					}
+				}if(plateau[i][j].estVide && !(plateau_copie[i][j].estVide)){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public void gravite(){
+		Case[][] plateau_copie = copiePlateau();
+		graviteVerticale();
+		graviteHorizontaleRecursive();
+		AnimalAuSol();
+		if(!comparaison(plateau_copie)){
+			gravite();
+		}
+	}
+
+	public void graviteHorizontaleRecursive(){
+		Case[][] plateau_copie = copiePlateau();
+		graviteHorizontale();
+		if(!comparaison(plateau_copie)){
+			graviteHorizontaleRecursive();
+		}
+	}
+
+	public void tour(){
+		//On joue un tour en entrant 2 entiers correspondant aux coordonnées d'un cube. si le cube sélectionné ne peut pas être supprimé, on relance le tour. A la fin du tour on vérifie si le jeu n'est pas fini et, dans le cas où il ne l'est pas, on joue le tour suivant.
+		affichage();
+		scanner = new Scanner(System.in); 
+		System.out.print("\nSélectionnez la ligne de la case à supprimer : ");
+		int x = scanner.nextInt() - 1;
+		System.out.print("\nSélectionnez la colonne de la case à supprimer : ");
+		int y = scanner.nextInt() - 1;
+		System.out.print("\n");
+		if(peutSupprimer(x,y)){
+			supprime(x,y);
+			gravite();
+		}else{
+			System.out.println("Vous ne pouvez pas supprimer ce bloc.\n");
+		}
+		if(nbAnimaux >= 0){
+			tour();
+		}else{
+			System.out.println("Vous avez gagné !");
 		}
 	}
 

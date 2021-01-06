@@ -3,3 +3,4 @@ public class Obstacle extends Piece{
 	public Obstacle(){
 		super("obstacle");
 	}
+}
