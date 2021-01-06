@@ -5,6 +5,7 @@ public class Joueur implements Serializable{
 
 	public String nom;
 	public int score_cumule;
+	public boolean[] niveau_etat = {true, false, false, false};
 	
 	public Joueur(String nom){
 		this.nom = nom;

@@ -127,7 +127,7 @@ public class Vue extends JFrame {
 		repaint();
 	}
 
-	public void displayGrid(Grille grille){
+	public void displayGrid(Grille grille, Grille niveau_og){
 		getContentPane().removeAll();
 
 		JPanel grid_buttonlist = new JPanel();
@@ -142,7 +142,9 @@ public class Vue extends JFrame {
 		
 		GridLayout grid_layout = new GridLayout(grille.largeur, grille.hauteur);
 
-		makingGrid(grid_buttonlist, button_grid, grille);
+		Grille grille2 = new Grille(grille.copiePlateau(), 0, 0);
+
+		makingGrid(grid_buttonlist, button_grid, grille, grille2);
 
 		grid_buttonlist.setLayout(grid_layout);
 
@@ -161,16 +163,35 @@ public class Vue extends JFrame {
 			try{
 				FileInputStream fis = new FileInputStream("niveau.ser");
 				ObjectInputStream ois = new ObjectInputStream(fis);
-				Grille grille2 = (Grille)ois.readObject();
-				displayGrid(grille2);
+				Grille grille3 = (Grille)ois.readObject();
+				displayGrid(grille3, niveau_og);
 			}catch(Exception e){
-				notificationFenetre("Erreur", "Aucune sauvegarde trouvée !", "Retour");
+				JFrame grid_erreur = new JFrame();
+				JLabel grid_erreur_text = new JLabel("Aucune sauvegarde trouvée !");
+				JButton grid_erreur_return = new JButton("Retour");
+
+				grid_erreur_text.setHorizontalAlignment(JLabel.CENTER);
+
+				grid_erreur.add(grid_erreur_text, BorderLayout.CENTER);
+
+				grid_erreur_return.addActionListener((event2) ->{
+					grid_erreur.dispose();
+				});
+
+				grid_erreur.add(grid_erreur_return, BorderLayout.PAGE_END);
+
+				grid_erreur.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+				grid_erreur.setPreferredSize(new Dimension(400, 150));
+				grid_erreur.setTitle("Erreur");
+				grid_erreur.pack();
+				grid_erreur.setLocationRelativeTo(null);
+				grid_erreur.setVisible(true);
 			}
 		});
 
 		grid_bot.addActionListener((event) ->{
 			JFrame fenetre = new JFrame();
-			JLabel texte = new JLabel("Êtes-vous sûr ? Vous perdrez 200 points...");
+			JLabel texte = new JLabel("Êtes-vous sûr ? Demander au robot de jouer <br>votre tour vous fait perdre 200 points...");
 			JPanel buttons = new JPanel();
 			JButton confirmer = new JButton("Oui");
 			JButton retour = new JButton("Non");
@@ -181,8 +202,9 @@ public class Vue extends JFrame {
 	
 			confirmer.addActionListener((event2) ->{
 				Robot robot = new Robot(grille);
-				robot.doLevel();
-				displayGrid(robot.grille);
+				int[] coordonnees = grille.aide();
+				button_grid[coordonnees[0]][coordonnees[1]].doClick();
+				grille.modele.score =- 200;
 				fenetre.dispose();
 			});
 
@@ -203,22 +225,39 @@ public class Vue extends JFrame {
 		});
 
 		grid_help.addActionListener((event) ->{
-			grille.modele.score -= 200;
+			grille.modele.score -= 100;
 			
 			int[] aide = grille.aide();
 
 			aide[0]++;
 			aide[1]++;
 
-			String text = "<html>La case aux coordonnées [" + aide[0] + ", " + aide[1] + "] est jouable...<br/>Afin de connaitre les coordonnées d'une case, survolez-le avec la souris...</html>";
-			notificationFenetre("Aide", text, "Retour");
-		});
+			JFrame help = new JFrame();
+			JLabel help_text = new JLabel("<html>La case aux coordonnées [" + aide[0] + ", " + aide[1] + "] est jouable...<br/>Afin de connaitre les coordonnées d'une case, survolez-le avec la souris...<br>Avoir demander de l'aide vous donne un malus de 100 points<br>sur votre prochaine suppression !</html>");
+			JButton help_return = new JButton("Retour");
 
-		Grille grille2 = new Grille(grille.copiePlateau(), 0, 0);
+			help_text.setHorizontalAlignment(JLabel.CENTER);
+
+			help.add(help_text, BorderLayout.CENTER);
+
+			help_return.addActionListener((event2) ->{
+				help.dispose();
+			});
+
+			help.add(help_return, BorderLayout.PAGE_END);
+
+			help.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			help.setPreferredSize(new Dimension(400, 150));
+			help.setTitle("Aide");
+			help.pack();
+			help.setLocationRelativeTo(null);
+			help.setVisible(true);
+
+		});
 
 		grid_reset.addActionListener((event) ->{
 			grille2.plateau = grille2.copiePlateau();
-			displayGrid(grille2);
+			displayGrid(grille2, niveau_og);
 		});
 
 		grid_return.addActionListener((event) ->{
@@ -227,8 +266,8 @@ public class Vue extends JFrame {
 		
 		grid_south_buttons.add(grid_save);
 		grid_south_buttons.add(grid_load);
-		grid_south_buttons.add(grid_help);
 		grid_south_buttons.add(grid_bot);
+		grid_south_buttons.add(grid_help);
 		grid_south_buttons.add(grid_reset);
 		grid_south_buttons.add(grid_return);
 
@@ -238,23 +277,46 @@ public class Vue extends JFrame {
 		repaint();
 	}
 
-	public void makingGrid(JPanel grid_buttonlist, JButton[][] button_grid, Grille grille){
+	public void makingGrid(JPanel grid_buttonlist, JButton[][] button_grid, Grille grille, Grille grille2){
+		JPanel top_components = new JPanel();
+
+		JLabel tour = new JLabel();
+		if(grille.modele.tour_max == 0){
+			tour.setText("Tour " + grille.modele.tour);
+		}else{
+			tour.setText("Tour " + grille.modele.tour + "/" + grille.modele.tour_max);
+		}
+
+		JLabel score = new JLabel("Score : " + grille.modele.score);
+		JLabel animaux_restants = new JLabel("Nombre d'animaux restants : " + grille.nbAnimaux);
+		JLabel grid_scoreMax = new JLabel("Score maximal atteignable : " + grille.modele.score_max);
+
+		top_components.add(grid_scoreMax);
+		top_components.add(score);
+		top_components.add(animaux_restants);
+		top_components.add(tour);
+
 		for(int i = 0; i < grille.largeur; i++){
 			for(int j = 0; j < grille.hauteur; j++){
 				JButton piece = new JButton();
-				piece.setName(i + "" + j);
+				piece.setName(i + "," + j);
 				piece.setToolTipText(String.valueOf(i + 1) + ", " + String.valueOf(j + 1));
 				piece.setSize(new Dimension(10, 10));
 				piece.addActionListener((event) -> {
-					int x = Integer.parseInt(String.valueOf(piece.getName().charAt(0)));
-					int y = Integer.parseInt(String.valueOf(piece.getName().charAt(1)));
+					String s = "";
+					int c = 0;
+					while(piece.getName().charAt(c) != ','){
+						s += piece.getName().charAt(c);
+						c++;
+					}int x = Integer.parseInt(s);
+					int y = Integer.parseInt(String.valueOf(piece.getName().charAt(piece.getName().length()-1)));
 					if(grille.peutSupprimer(x, y)){
 						grille.modele.tour++;
 
 						grille.supprime(x, y);
 						grille.graviteRecursive();
 						grid_buttonlist.removeAll();
-						makingGrid(grid_buttonlist, button_grid, grille);
+						makingGrid(grid_buttonlist, button_grid, grille, grille2);
 						grid_buttonlist.setLayout(new GridLayout(grille.largeur, grille.hauteur));
 						grid_buttonlist.revalidate();
 						grid_buttonlist.repaint();
@@ -265,6 +327,19 @@ public class Vue extends JFrame {
 								ObjectOutputStream oos = new ObjectOutputStream(fos);
 								oos.writeObject(joueur);
 							}catch (Exception e){
+								e.printStackTrace();
+							}
+							if(grille2.comparaison(niveau.plateau_niveau1))
+								joueur.niveau_etat[1] = true;
+							if(grille2.comparaison(niveau.plateau_niveau2))
+								joueur.niveau_etat[2] = true;
+							if(grille2.comparaison(niveau.plateau_niveau3))
+								joueur.niveau_etat[3] = true;
+							try {
+								FileOutputStream fos = new FileOutputStream("joueur.ser");
+								ObjectOutputStream oos = new ObjectOutputStream(fos);
+								oos.writeObject(joueur);
+							}catch(Exception e){
 								e.printStackTrace();
 							}
 							JFrame grid_victoire = new JFrame();
@@ -289,6 +364,27 @@ public class Vue extends JFrame {
 							grid_victoire.setLocationRelativeTo(null);
 							grid_victoire.setVisible(true);
 						}
+					}else{
+						JFrame grid_erreur = new JFrame();
+						JLabel grid_erreur_text = new JLabel("Vous ne pouvez pas supprimer ce bloc !");
+						JButton grid_erreur_return = new JButton("Retour");
+
+						grid_erreur_text.setHorizontalAlignment(JLabel.CENTER);
+
+						grid_erreur.add(grid_erreur_text, BorderLayout.CENTER);
+
+						grid_erreur_return.addActionListener((event2) ->{
+							grid_erreur.dispose();
+						});
+
+						grid_erreur.add(grid_erreur_return, BorderLayout.PAGE_END);
+
+						grid_erreur.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+						grid_erreur.setPreferredSize(new Dimension(400, 150));
+						grid_erreur.setTitle("Erreur");
+						grid_erreur.pack();
+						grid_erreur.setLocationRelativeTo(null);
+						grid_erreur.setVisible(true);
 					}
 				});
 				if(grille.plateau[i][j].piece instanceof Cube.Rouge){
@@ -319,6 +415,9 @@ public class Vue extends JFrame {
 				grid_buttonlist.add(button_grid[i][j]);
 			}
 		}
+
+		add(grid_buttonlist, BorderLayout.CENTER);
+		add(top_components, BorderLayout.NORTH);
 	}
 
 	private void rules() {
@@ -350,10 +449,25 @@ public class Vue extends JFrame {
 	}
 	
 	private void selectLevel(){	
+		JPanel top_panel = new JPanel();
+			JButton unlock = new JButton("Débloquer tous les niveaux.");
+				unlock.addActionListener((event) ->
+				{
+					for(int i = 0; i < joueur.niveau_etat.length; i++){
+						joueur.niveau_etat[i] = true;
+					}
+					try{
+						FileOutputStream fos = new FileOutputStream("joueur.ser");
+						ObjectOutputStream oos = new ObjectOutputStream(fos);
+						oos.writeObject(joueur);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+					selectLevel();
+				});
+
 		JPanel level_panel = new JPanel();
 		GridLayout level_layout = new GridLayout(0, 1);
-	
-		JPanel level_panel2 = new JPanel();
 			JLabel level_text = new JLabel("Choisissez votre niveau de difficulté.");
 				level_text.setHorizontalAlignment(JLabel.CENTER);
 			JButton niveau1 = new JButton("Niveau 1");
@@ -364,10 +478,23 @@ public class Vue extends JFrame {
 				niveau3.setBackground(Color.ORANGE);
 			JButton niveau4 = new JButton("Niveau 4");
 				niveau4.setBackground(Color.RED);
-		JButton level_return = new JButton("Retour");
+
+		JPanel level_panel2 = new JPanel();
+			JButton level_return = new JButton("Retour");
 
 		getContentPane().removeAll();
 
+		if(!joueur.niveau_etat[0])
+			niveau1.setEnabled(false);
+		if(!joueur.niveau_etat[1])
+			niveau2.setEnabled(false);
+		if(!joueur.niveau_etat[2])
+			niveau3.setEnabled(false);
+		if(!joueur.niveau_etat[3])
+			niveau4.setEnabled(false);
+
+		top_panel.add(level_text);
+		top_panel.add(unlock);
 		level_panel.add(niveau1);
 		level_panel.add(niveau2);
 		level_panel.add(niveau3);
@@ -381,31 +508,31 @@ public class Vue extends JFrame {
 		});
 	
 		niveau1.addActionListener((event)->{
-			Grille grille = niveau.niveau1;
+			Grille grille = new Grille(niveau.plateau_niveau1, 0, 0);
 			grille.plateau = grille.copiePlateau();
-			displayGrid(grille);
+			displayGrid(grille, niveau.niveau1);
 		});
 			
 		niveau2.addActionListener((event)->{
-			Grille grille = niveau.niveau2;
+			Grille grille = new Grille(niveau.plateau_niveau2, 0, 0);
 			grille.plateau = grille.copiePlateau();
-			displayGrid(grille);
+			displayGrid(grille, niveau.niveau2);
 		});
 			
 		niveau3.addActionListener((event)->{
-			Grille grille = niveau.niveau3;
+			Grille grille = new Grille(niveau.plateau_niveau3, 0, 0);
 			grille.plateau = grille.copiePlateau();
-			displayGrid(grille);
+			displayGrid(grille, niveau.niveau3);
 		});
 
 		niveau4.addActionListener((event) ->{
-			Grille grille = niveau.niveau4;
+			Grille grille = new Grille(niveau.plateau_niveau42, 0, 0);
 			grille.plateau = grille.copiePlateau();
-			displayGrid(grille);
+			displayGrid(grille, niveau.niveau4);
 		});
 
 		add(level_panel, BorderLayout.CENTER);
-		add(level_text, BorderLayout.NORTH);
+		add(top_panel, BorderLayout.NORTH);
 		add(level_panel2, BorderLayout.SOUTH);
 
 		level_layout.setVgap(30);
