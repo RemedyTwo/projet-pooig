@@ -194,7 +194,7 @@ public class Vue extends JFrame {
 
 		grid_bot.addActionListener((event) ->{
 			JFrame fenetre = new JFrame();
-			JLabel texte = new JLabel("Êtes-vous sûr ? Demander au robot de jouer <br>votre tour vous fait perdre 200 points...");
+			JLabel texte = new JLabel("Êtes-vous sûr ? Demander au robot de jouer <\br>votre tour vous fait perdre 200 points...");
 			JPanel buttons = new JPanel();
 			JButton confirmer = new JButton("Oui");
 			JButton retour = new JButton("Non");
